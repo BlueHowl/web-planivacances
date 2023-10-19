@@ -1,16 +1,15 @@
 <script lang="ts">
-  import { Router, Route } from 'svelte-navigator';
+  import { Router, Route } from "svelte-navigator";
 
-  import Footer from './lib/Footer.svelte';
-  import Header from './lib/Header.svelte';
-  import Home from './lib/Home.svelte';
+  let basepath = import.meta.env.BASE_URL;
 
-  export let url = "";
-
+  import Footer from "./lib/Footer.svelte";
+  import Header from "./lib/Header.svelte";
+  import Home from "./lib/Home.svelte";
 </script>
 
-<Router {url}> <!--basepath = "/~d170051/APOD">-->
-  <Header></Header>
+<Router {basepath}>
+  <Header />
   <main class="app">
     <Route path="/" component={Home} />
 
@@ -20,4 +19,4 @@
   </main>
 </Router>
 
-<Footer></Footer>
+<Footer />
