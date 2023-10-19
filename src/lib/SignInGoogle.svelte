@@ -39,6 +39,7 @@
           // La requête a réussi
           console.log('Token envoyé avec succès à votre API');
           const uid = await response.text();
+          console.log(uid);
         } else {
           // Gérez les erreurs ici
           console.error('Erreur lors de l\'envoi du token à votre API');
