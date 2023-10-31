@@ -54,6 +54,12 @@ h1 {
 
 .app {
   padding: 2rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+.app * {
+  max-width: 100%;
 }
 
 button {

@@ -1,10 +1,22 @@
 <script lang="ts">
-    import SignInGoogle from "./SignInGoogle.svelte";
-
-    
+  import RegistredMembersSection from "./RegistredMembersSection.svelte";
+  import MembersInHolidayByDateSection from "./MembersInHolidayByDateSection.svelte";
+  import HolidaysByCountrySection from "./HolidaysByCountrySection.svelte";
 </script>
 
+<p id="catchPhrase" class="text-primary">
+  Voyagez mieux, ensemble.<br />Organisez vos vacances en un clin d'œil !
+</p>
 
-<h1>Page test</h1>
+<RegistredMembersSection />
 
-<SignInGoogle />
+<MembersInHolidayByDateSection />
+
+<HolidaysByCountrySection />
+
+<style>
+  #catchPhrase {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+</style>
