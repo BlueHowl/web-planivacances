@@ -7,7 +7,7 @@
 <section id="numberMembersInHolidayByDate">
   <p>Découvrez le nombre de personnes en vacances le jour de votre choix :</p>
   <div id="searchHolidayByDateBar">
-    <Input type="date" name="date" style="margin-right:0.2rem;" />
+    <Input type="date" name="dateToSearch" style="margin-right:0.2rem;" />
     <Button color="primary" outline>Valider</Button>
   </div>
   <GreyParagraphFrame

@@ -1,7 +1,11 @@
 <script lang="ts">
+  import { useNavigate } from "svelte-navigator";
   import CustomCard from "./CustomCard.svelte";
 
+  const navigate = useNavigate();
+
   type Holiday = {
+    id: number;
     title: string;
     startDate: string;
     endDate: string;
@@ -12,34 +16,43 @@
 
   let holidays: Holiday[] = [
     {
+      id: 1,
       title: "Weekend en amoureux",
-      startDate: "20/10/2023",
-      endDate: "22/10/2023",
+      startDate: "2023-10-20",
+      endDate: "2023-10-22",
       place: "Rue des Pottiers 3 à 2344 LoveCity",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus quis leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus quis leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus quis leo.",
-      isPublish: false,
+      isPublish: true,
     },
     {
+      id: 2,
       title: "Séjour à la montagne",
-      startDate: "26/11/2023",
-      endDate: "05/12/2023",
+      startDate: "2023-11-26",
+      endDate: "2023-12-05",
       place: "Rue des Montagnes 44 à 2223 MontagneCity",
       description:
         "Maecenas ullamcorper tempus nisi, eget pulvinar nulla accumsan condimentum.Maecenas ullamcorper tempus nisi, eget pulvinar nulla accumsan condimentum.",
       isPublish: false,
     },
   ];
+
+  function handleNavToDetails(event: CustomEvent) {
+    navigate("/holidayDetails", {
+      state: holidays.find((elem) => elem.id === event.detail.id),
+    });
+  }
 </script>
 
 <section id="holidays-container">
   {#each holidays as holiday}
     <CustomCard
+      id={holiday.id}
       title={holiday.title}
       startDate={holiday.startDate}
       endDate={holiday.endDate}
       description={holiday.description}
-      link={"/"}
+      on:navToDetails={handleNavToDetails}
     />
   {/each}
 </section>

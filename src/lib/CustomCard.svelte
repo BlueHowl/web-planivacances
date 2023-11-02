@@ -1,37 +1,45 @@
 <script lang="ts">
+  import { formatDateForDisplay } from "../utils/DateFormatter";
+  import { createEventDispatcher } from "svelte";
   import {
     Card,
     CardBody,
     CardTitle,
     CardSubtitle,
     CardText,
-    CardLink,
   } from "sveltestrap";
 
-  import { Link } from "svelte-navigator";
-
+  export let id: number;
   export let title: string;
   export let startDate: string;
   export let endDate: string;
   export let description: string;
-  export let link: string;
+
+  let displayedStartDate: string = formatDateForDisplay(startDate);
+  let displayedEndDate: string = formatDateForDisplay(endDate);
+
+  const dispatch = createEventDispatcher();
+
+  function onNavToDetails() {
+    dispatch("navToDetails", { id: id });
+  }
 </script>
 
 <Card
-  style="width: 22rem; height:15rem;margin-bottom: 20px; margin-right:1rem;"
+  style="width: 22rem; height:16rem;margin-bottom: 20px; margin-right:1rem;"
 >
   <CardBody>
     <CardTitle
       >{title.length > 20 ? `${title.substring(0, 20)}...` : title}</CardTitle
     >
     <CardSubtitle class="mb-2 text-muted"
-      >Du {startDate} au {endDate}</CardSubtitle
+      >Du {displayedStartDate} au {displayedEndDate}</CardSubtitle
     >
     <CardText>
       {description.length > 70
         ? `${description.substring(0, 70)}...`
         : description}
     </CardText>
-    <CardLink><Link to={link}>Consulter</Link></CardLink>
+    <button on:click={onNavToDetails}>Consulter</button>
   </CardBody>
 </Card>

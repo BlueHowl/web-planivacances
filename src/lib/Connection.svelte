@@ -5,10 +5,11 @@
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
 </script>
 
+<h1>Connexion</h1>
 <section id="connectionForm">
   <Form>
-    <FormGroup>
-      <Input type="email" name="email" placeholder="Mail" />
+    <FormGroup floating label="Mail">
+      <Input type="email" name="email" />
     </FormGroup>
     <InputPasswordWithToggle />
     <Link to="/register" class="primary">Pas encore de compte ?</Link>

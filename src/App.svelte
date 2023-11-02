@@ -11,6 +11,14 @@
   import Register from "./lib/Register.svelte";
   import Holidays from "./lib/Holidays.svelte";
   import NewHoliday from "./lib/NewHoliday.svelte";
+  import HolidayDetails from "./lib/HolidayDetails.svelte";
+  import UpdateHoliday from "./lib/UpdateHoliday.svelte";
+  import ActivitiesPlanning from "./lib/ActivitiesPlanning.svelte";
+  import ActivityDetails from "./lib/ActivityDetails.svelte";
+  import NewActivity from "./lib/NewActivity.svelte";
+  import UpdateActivity from "./lib/UpdateActivity.svelte";
+  import Tchat from "./lib/Tchat.svelte";
+  import Weather from "./lib/Weather.svelte";
 </script>
 
 <Router {basepath}>
@@ -23,6 +31,14 @@
     <Route path="/profile">Mon profil</Route>
     <Route path="/holidays" component={Holidays} />
     <Route path="/newHoliday" component={NewHoliday} />
+    <Route path="/updateHoliday" component={UpdateHoliday} />
+    <Route path="/holidayDetails" component={HolidayDetails} />
+    <Route path="/newActivity" component={NewActivity} />
+    <Route path="/updateActivity" component={UpdateActivity} />
+    <Route path="/activityDetails" component={ActivityDetails} />
+    <Route path="/planning" component={ActivitiesPlanning} />
+    <Route path="/tchat" component={Tchat} />
+    <Route path="/weather" component={Weather} />
     <Route path="/notifications">Mes notifications</Route>
   </main>
 </Router>

@@ -1,35 +1,35 @@
 <script lang="ts">
   import { Form, FormGroup, Input, Button } from "sveltestrap";
   let addresses = [
-    { id: 1, completeAddress: "Rue des Pottiers 3 à 2344 LoveCity" },
-    { id: 2, completeAddress: "Rue des Montagnes 44 à 2223 MontagneCity" },
+    { id: 1, completeAddress: "Rue Montagne 3 à 40003 Montagne" },
+    { id: 2, completeAddress: "Rue de la Mer 5 à 50005 Mer" },
   ];
 </script>
 
-<h1>Ajout d'une période de vacances</h1>
-<section id="addHolidayForm">
+<h1>Ajout d'une activité</h1>
+<section id="addActivityForm">
   <Form>
-    <FormGroup floating label="Titre des vacances">
-      <Input id="holidayTitle" name="holidayTitle" />
+    <FormGroup floating label="Titre de l'activité">
+      <Input id="activityTitle" name="activityTitle" />
     </FormGroup>
     <FormGroup floating label="Date de début">
       <Input
-        id="startHolidayDate"
-        type="date"
-        name="startHolidayDate"
+        id="startActivityDate"
+        type="datetime-local"
+        name="startActivityDate"
         style="margin-right:0.2rem;"
       />
     </FormGroup>
     <FormGroup floating label="Date de fin">
       <Input
-        id="endHolidayDate"
-        type="date"
-        name="endHolidayDate"
+        id="endActivityDate"
+        type="datetime-local"
+        name="endActivityDate"
         style="margin-right:0.2rem;"
       />
     </FormGroup>
     <FormGroup floating label="Lieu">
-      <Input type="select" name="holidayPlace" id="holidayPlace">
+      <Input type="select" name="activityPlace" id="activityPlace">
         {#each addresses as address}
           <option value={address.id}>{address.completeAddress}</option>
         {/each}
@@ -37,9 +37,9 @@
     </FormGroup>
     <FormGroup floating label="Ecrivez une description ici...">
       <Input
-        id="holidayDescription"
+        id="activityDescription"
         type="textarea"
-        name="holidayDescription"
+        name="activityDescription"
       />
     </FormGroup>
     <Button color="primary" class="w-75 mb-3 mt-3">Ajouter</Button>
@@ -47,7 +47,7 @@
 </section>
 
 <style>
-  #addHolidayForm {
+  #addActivityForm {
     margin: 2rem auto;
     width: 35rem;
   }
