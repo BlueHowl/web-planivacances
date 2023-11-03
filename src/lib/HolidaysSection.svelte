@@ -20,7 +20,7 @@
       title: "Weekend en amoureux",
       startDate: "2023-10-20",
       endDate: "2023-10-22",
-      place: "Rue des Pottiers 3 à 2344 LoveCity",
+      place: "Rue des Pottiers 3 2344 LoveCity",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus quis leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus quis leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus quis leo.",
       isPublish: true,
@@ -30,7 +30,7 @@
       title: "Séjour à la montagne",
       startDate: "2023-11-26",
       endDate: "2023-12-05",
-      place: "Rue des Montagnes 44 à 2223 MontagneCity",
+      place: "Rue de Harlez 25 4000 Liège",
       description:
         "Maecenas ullamcorper tempus nisi, eget pulvinar nulla accumsan condimentum.Maecenas ullamcorper tempus nisi, eget pulvinar nulla accumsan condimentum.",
       isPublish: false,

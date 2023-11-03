@@ -13,10 +13,3 @@
     <Notification title={notification.title} action={notification.action} />
   {/each}
 </section>
-
-<style>
-  #notificationsSection {
-    display: flex;
-    flex-direction: column;
-  }
-</style>

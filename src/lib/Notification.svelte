@@ -15,6 +15,8 @@
 <style>
   #notification {
     margin-bottom: 1rem;
+    background-color: #f2f2f2;
+    padding: 1rem;
   }
 
   #title {

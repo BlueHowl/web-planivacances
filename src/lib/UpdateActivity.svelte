@@ -13,8 +13,8 @@
   let selectedIdPlace: number;
 
   let addresses = [
-    { id: 1, completeAddress: "Rue Montagne 3 à 40003 Montagne" },
-    { id: 2, completeAddress: "Rue de la Mer 5 à 50005 Mer" },
+    { id: 1, completeAddress: "Rue Montagne 3 40003 Montagne" },
+    { id: 2, completeAddress: "Rue de la Mer 5 50005 Mer" },
   ];
 
   if (location && $location.state) {

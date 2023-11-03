@@ -59,14 +59,14 @@
         title: "Ascension de la montagne",
         startDate: "2023-11-15T13:00:00",
         endDate: "2023-11-15T17:00:00",
-        place: "Rue Montagne 3 à 40003 Montagne",
+        place: "Rue Montagne 3 40003 Montagne",
         description: "Pas facile tout ça",
       },
       {
         title: "Snorkeling",
         startDate: "2023-11-18T14:00:00",
         endDate: "2023-11-18T16:00:00",
-        place: "Rue de la Mer 5 à 50005 Mer",
+        place: "Rue de la Mer 5 50005 Mer",
         description: "On va faire du snorkeling à la mer",
       },
     ];
