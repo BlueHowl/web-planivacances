@@ -36,7 +36,7 @@
     const days = 14;
     try {
       const response = await fetch(
-        `http://api.weatherapi.com/v1/forecast.json?key=${API_KEY_WEATHER}&q=${lat},${long}&days=${days}&aqi=no&alerts=no`
+        `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY_WEATHER}&q=${lat},${long}&days=${days}&aqi=no&alerts=no`
       );
       if (response.ok) {
         const forecastsResult = await response.json();
@@ -65,7 +65,6 @@
     forecasts = [];
     errorMessage = "";
     const coordinates = await getCoordinates(place);
-    console.log(coordinates);
     if (coordinates) {
       const { latitude, longitude } = coordinates;
       forecasts = await getWeatherData(latitude, longitude);
