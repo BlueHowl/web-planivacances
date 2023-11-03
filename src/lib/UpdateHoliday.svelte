@@ -13,8 +13,8 @@
   let selectedIdPlace: number;
 
   let addresses = [
-    { id: 1, completeAddress: "Rue des Pottiers 3 à 2344 LoveCity" },
-    { id: 2, completeAddress: "Rue des Montagnes 44 à 2223 MontagneCity" },
+    { id: 1, completeAddress: "Rue des Pottiers 3 2344 LoveCity" },
+    { id: 2, completeAddress: "Rue de Harlez 25 4000 Liège" },
   ];
 
   if (location && $location.state) {

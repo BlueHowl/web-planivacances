@@ -19,6 +19,7 @@
   import UpdateActivity from "./lib/UpdateActivity.svelte";
   import Tchat from "./lib/Tchat.svelte";
   import Weather from "./lib/Weather.svelte";
+  import NotificationPage from "./lib/NotificationPage.svelte";
 </script>
 
 <Router {basepath}>
@@ -39,7 +40,7 @@
     <Route path="/planning" component={ActivitiesPlanning} />
     <Route path="/tchat" component={Tchat} />
     <Route path="/weather" component={Weather} />
-    <Route path="/notifications">Mes notifications</Route>
+    <Route path="/notifications" component={NotificationPage} />
   </main>
 </Router>
 
