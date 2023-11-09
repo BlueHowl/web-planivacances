@@ -2,6 +2,7 @@
   import { useNavigate } from "svelte-navigator";
   import { initializeApp } from "firebase/app";
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+  import { authToken } from "../token";
   import { Button } from "sveltestrap";
   import googleLogo from "../assets/logo-google.png";
 
@@ -40,11 +41,14 @@
 
       if (response.ok) {
         console.log("Token envoyé avec succès à votre API");
-        const uid = await response.text();
-        console.log(uid);
+        const token = await response.text();
 
-        //TODO stocker token, remonter via event dans composant parent ??
-        navigate("/");
+        if(token) {
+          authToken.set(token); // remonter via event dans composant parent ??
+          navigate("/");
+        } else {
+          console.error("Erreur lors de la récupération du token");
+        }
       } else {
         console.error("Erreur lors de l'envoi du token à votre API");
       }

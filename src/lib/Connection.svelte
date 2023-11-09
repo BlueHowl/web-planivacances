@@ -2,6 +2,7 @@
   import { useNavigate } from "svelte-navigator";
   import { Form, FormGroup, Input, Button } from "sveltestrap";
   import { Link } from "svelte-navigator";
+  import { authToken } from "../token";
   import SignInGoogle from "./SignInGoogle.svelte";
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
 
@@ -39,10 +40,13 @@
     if (response.ok) {
       console.log("Connexion au compte avec succès");
       const token = await response.text();
-      console.log(token);
 
-      //TODO stocker token, remonter via event dans composant parent ??
-      navigate("/");
+      if(token) {
+        authToken.set(token); // remonter via event dans composant parent ??
+        navigate("/");
+      } else {
+        console.error("Erreur lors de la récupération du token");
+      }
     } else {
       console.error("Erreur lors de la connexion au compte");
     }
