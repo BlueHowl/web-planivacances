@@ -1,13 +1,57 @@
 <script lang="ts">
+  import { useNavigate } from "svelte-navigator";
   import { Form, FormGroup, Input, Button } from "sveltestrap";
   import { Link } from "svelte-navigator";
   import SignInGoogle from "./SignInGoogle.svelte";
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
+
+  let validated: boolean = false;
+
+  const navigate = useNavigate();
+
+  function onSubmit(e: any) {
+    e.preventDefault();
+
+    validated = true;
+
+    const formData = new FormData(e.target);
+
+    login(
+      formData.get("email") as string, 
+      formData.get("password") as string);
+  }
+
+  const login = async (email: string, password: string) => {
+    // Envoie de l'enregistrement utilisateur à l'API
+    const apiUrl = "http://localhost:8080/api/auth/login";
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+          "Content-Type": "application/json"
+        },
+      body: JSON.stringify({
+        mail: email,
+        password: password 
+      })
+    });
+
+    if (response.ok) {
+      console.log("Connexion au compte avec succès");
+      const token = await response.text();
+      console.log(token);
+
+      //TODO stocker token, remonter via event dans composant parent ??
+      navigate("/");
+    } else {
+      console.error("Erreur lors de la connexion au compte");
+    }
+  }
 </script>
 
 <h1>Connexion</h1>
 <section id="connectionForm">
-  <Form>
+  <Form {validated} on:submit={onSubmit}>
     <FormGroup floating label="Mail">
       <Input type="email" name="email" />
     </FormGroup>

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Form, FormGroup, Input, Button } from "sveltestrap";
+  import { FormGroup, Input } from "sveltestrap";
   import "@fortawesome/fontawesome-free/css/all.min.css";
-  let passwordVisible: Boolean = false;
+  let passwordVisible: boolean = false;
   function togglePasswordVisibility() {
     passwordVisible = !passwordVisible;
   }
@@ -13,6 +13,8 @@
       type={passwordVisible ? "text" : "password"}
       name="password"
       placeholder="Mot de passe"
+      feedback="Mot de passe requis"
+      required
     />
     {#if passwordVisible}
       <i

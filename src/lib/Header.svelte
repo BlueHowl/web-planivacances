@@ -17,10 +17,10 @@
 
   const location = useLocation();
   let isOpen = false;
-  let isConnected = true;
+  let isConnected = false;
   let profileConnected = "Maxime Cao";
 
-  function handleUpdate(event) {
+  function handleUpdate(event: CustomEvent) {
     isOpen = event.detail.isOpen;
   }
 </script>
