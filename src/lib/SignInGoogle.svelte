@@ -2,7 +2,7 @@
   import { useNavigate } from "svelte-navigator";
   import { initializeApp } from "firebase/app";
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-  import { authToken } from "../token";
+  import { setToken } from "../AuthToken";
   import { Button } from "sveltestrap";
   import googleLogo from "../assets/logo-google.png";
 
@@ -44,7 +44,7 @@
         const token = await response.text();
 
         if(token) {
-          authToken.set(token); // remonter via event dans composant parent ??
+          setToken(token); // remonter via event dans composant parent ??
           navigate("/");
         } else {
           console.error("Erreur lors de la récupération du token");
