@@ -10,11 +10,12 @@
   const firebaseConfig = {
     apiKey: "AIzaSyDEed69NWze9I39twdSl8a8SvZAOvO51QU",
     authDomain: "planivacances.firebaseapp.com",
-    databaseURL: "https://planivacances-default-rtdb.europe-west1.firebasedatabase.app",
+    databaseURL:
+      "https://planivacances-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "planivacances",
     storageBucket: "planivacances.appspot.com",
     messagingSenderId: "389100630019",
-    appId: "1:389100630019:web:11cfe216ccc49552511e36"
+    appId: "1:389100630019:web:11cfe216ccc49552511e36",
   };
 
   const navigate = useNavigate();
@@ -32,10 +33,9 @@
       const apiUrl = "http://localhost:8080/api/auth/token";
       const response = await fetch(apiUrl, {
         method: "POST",
-        mode: "cors",
         headers: {
           Authorization: `Bearer ${token}`, // Envoie le token dans l'en-tête Authorization
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
       });
 
@@ -43,7 +43,7 @@
         console.log("Token envoyé avec succès à votre API");
         const token = await response.text();
 
-        if(token) {
+        if (token) {
           setToken(token); // remonter via event dans composant parent ??
           navigate("/");
         } else {
@@ -63,7 +63,8 @@
   style="display:flex;justify-content:center;align-items:center;"
   color="light"
   on:click={signInWithGoogle}
-  ><img src={googleLogo} alt="Logo Google" />Continuer avec Google</Button>
+  ><img src={googleLogo} alt="Logo Google" />Continuer avec Google</Button
+>
 
 <style>
   img {

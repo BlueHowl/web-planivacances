@@ -7,6 +7,7 @@
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
 
   let validated: boolean = false;
+  let isNewAccount: boolean = false;
 
   const navigate = useNavigate();
 
@@ -17,9 +18,7 @@
 
     const formData = new FormData(e.target);
 
-    login(
-      formData.get("email") as string, 
-      formData.get("password") as string);
+    login(formData.get("email") as string, formData.get("password") as string);
   }
 
   const login = async (email: string, password: string) => {
@@ -29,19 +28,19 @@
       method: "POST",
       mode: "cors",
       headers: {
-          "Content-Type": "application/json"
-        },
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         mail: email,
-        password: password 
-      })
+        password: password,
+      }),
     });
 
     if (response.ok) {
       console.log("Connexion au compte avec succès");
       const token = await response.text();
 
-      if(token) {
+      if (token) {
         setToken(token); // remonter via event dans composant parent ??
         navigate("/");
       } else {
@@ -50,7 +49,7 @@
     } else {
       console.error("Erreur lors de la connexion au compte");
     }
-  }
+  };
 </script>
 
 <h1>Connexion</h1>

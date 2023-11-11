@@ -17,7 +17,7 @@
 
   const location = useLocation();
   let isOpen = false;
-  let isConnected = true;
+  let isConnected = false;
   let profileConnected = "Maxime Cao";
 
   function handleUpdate(event: CustomEvent) {
@@ -27,7 +27,7 @@
 
 <header class="planiVacancesHeader">
   <Navbar color="light" light expand="md">
-    <NavbarBrand href="/">PlaniVacances</NavbarBrand>
+    <Link to="/"><NavbarBrand>PlaniVacances</NavbarBrand></Link>
     <NavbarToggler on:click={() => (isOpen = !isOpen)} />
     <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
       <Nav class="ms-auto" navbar>
