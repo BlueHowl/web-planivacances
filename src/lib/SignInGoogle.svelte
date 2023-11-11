@@ -6,6 +6,8 @@
   import { Button } from "sveltestrap";
   import googleLogo from "../assets/logo-google.png";
 
+  export let isNewAccount: boolean;
+
   // Configuration Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyDEed69NWze9I39twdSl8a8SvZAOvO51QU",
@@ -22,6 +24,14 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+
+  const onAddUser = async () => {
+    try {
+      await fetch("http://localhost:8080/api/users/number");
+    } catch (error: any) {
+      console.log("Erreur lors de la mise à jour du nombre d'utilisateurs");
+    }
+  };
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
@@ -45,6 +55,9 @@
 
         if (token) {
           setToken(token); // remonter via event dans composant parent ??
+          if (isNewAccount) {
+            await onAddUser();
+          }
           navigate("/");
         } else {
           console.error("Erreur lors de la récupération du token");

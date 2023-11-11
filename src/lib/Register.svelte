@@ -89,7 +89,7 @@
     <InputPasswordWithToggle />
     <Link to="/connection" class="primary">Vous avez déjà un compte ?</Link>
     <Button color="primary" class="w-75 mb-3 mt-3">Créer un compte</Button>
-    <SignInGoogle />
+    <SignInGoogle {isNewAccount} />
   </Form>
 </section>
 

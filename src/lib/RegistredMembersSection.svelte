@@ -5,7 +5,9 @@
   let eventSource: EventSource;
 
   onMount(() => {
-    eventSource = new EventSource("http://localhost:8080/api/users/number");
+    eventSource = new EventSource(
+      "http://localhost:8080/api/users/number/flux"
+    );
 
     eventSource.onmessage = (event) => {
       counterMembers = event.data;
