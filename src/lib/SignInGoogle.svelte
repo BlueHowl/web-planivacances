@@ -24,6 +24,10 @@
       if (result) {
         console.log('Authentication Google réussie');
 
+        if(isNewAccount) {
+          onAddUser();
+        }
+
         navigate("/");
       } else {
         console.log('Problème Authentication Google');
