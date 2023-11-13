@@ -2,7 +2,7 @@
   import { useNavigate } from "svelte-navigator";
   import { Form, FormGroup, Input, Button } from "sveltestrap";
   import { Link } from "svelte-navigator";
-  import { setToken } from "../AuthToken";
+  import { register } from "../service/AuthService";
   import SignInGoogle from "./SignInGoogle.svelte";
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
 
@@ -21,10 +21,15 @@
       formData.get("name") as string, 
       formData.get("surname") as string, 
       formData.get("email") as string, 
-      formData.get("password") as string);
+      formData.get("password") as string)
+    .then((result) => {
+      if (result) {
+        navigate("/");
+      }
+    })
   }
 
-  const register = async (name: string, surname: string, email: string, password: string) => {
+  /*const register = async (name: string, surname: string, email: string, password: string) => {
     // Envoie de l'enregistrement utilisateur à l'API
     const apiUrl = "http://localhost:8080/api/auth/register";
     const response = await fetch(apiUrl, {
@@ -53,7 +58,7 @@
     } else {
       console.error("Erreur lors de la création du compte");
     }
-  }
+  }*/
 
 </script>
 

@@ -2,7 +2,7 @@
   import { useNavigate } from "svelte-navigator";
   import { Form, FormGroup, Input, Button } from "sveltestrap";
   import { Link } from "svelte-navigator";
-  import { setToken } from "../AuthToken";
+  import { login } from "../service/AuthService";
   import SignInGoogle from "./SignInGoogle.svelte";
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
 
@@ -19,10 +19,16 @@
 
     login(
       formData.get("email") as string, 
-      formData.get("password") as string);
+      formData.get("password") as string)
+    .then((result) => {
+      if (result) {
+        navigate("/");
+      }
+    })
+
   }
 
-  const login = async (email: string, password: string) => {
+  /*const login = async (email: string, password: string) => {
     // Envoie de l'enregistrement utilisateur à l'API
     const apiUrl = "http://localhost:8080/api/auth/login";
     const response = await fetch(apiUrl, {
@@ -50,7 +56,7 @@
     } else {
       console.error("Erreur lors de la connexion au compte");
     }
-  }
+  }*/
 </script>
 
 <h1>Connexion</h1>
