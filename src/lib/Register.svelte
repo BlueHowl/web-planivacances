@@ -7,6 +7,7 @@
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
 
   let validated: boolean = false;
+  let isNewAccount: boolean = true;
 
   const navigate = useNavigate();
 
@@ -28,69 +29,35 @@
       }
     })
   }
-
-  /*const register = async (name: string, surname: string, email: string, password: string) => {
-    // Envoie de l'enregistrement utilisateur à l'API
-    const apiUrl = "http://localhost:8080/api/auth/register";
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      mode: "cors",
-      headers: {
-          "Content-Type": "application/json"
-        },
-      body: JSON.stringify({
-        username: `${surname} ${name}`,
-        mail: email,
-        password: password 
-      })
-    });
-
-    if (response.ok) {
-      console.log("Création du compte avec succès");
-      const token = await response.text();
-
-      if(token) {
-        setToken(token); // remonter via event dans composant parent ??
-        navigate("/");
-      } else {
-        console.error("Erreur lors de la récupération du token");
-      }
-    } else {
-      console.error("Erreur lors de la création du compte");
-    }
-  }*/
-
 </script>
 
 <h1>Création d'un compte</h1>
 <section id="registerForm">
   <Form action="POST" {validated} on:submit={onSubmit}>
     <FormGroup floating label="Nom">
-      <Input 
-        name="name"
-        placeholder="Nom"
-        feedback="Nom requis"
-        required />
+      <Input name="name" placeholder="Nom" feedback="Nom requis" required />
     </FormGroup>
     <FormGroup floating label="Prénom">
-      <Input 
+      <Input
         name="surname"
         placeholder="Prénom"
         feedback="Prénom requis"
-        required />
+        required
+      />
     </FormGroup>
     <FormGroup floating label="Mail">
-      <Input 
-        type="email" 
+      <Input
+        type="email"
         name="email"
         placeholder="Email"
         feedback="Addresse mail requise"
-        required />
+        required
+      />
     </FormGroup>
-    <InputPasswordWithToggle/>
+    <InputPasswordWithToggle />
     <Link to="/connection" class="primary">Vous avez déjà un compte ?</Link>
     <Button color="primary" class="w-75 mb-3 mt-3">Créer un compte</Button>
-    <SignInGoogle />
+    <SignInGoogle {isNewAccount} />
   </Form>
 </section>
 

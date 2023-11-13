@@ -27,7 +27,7 @@
 
 <header class="planiVacancesHeader">
   <Navbar color="light" light expand="md">
-    <NavbarBrand href="/">PlaniVacances</NavbarBrand>
+    <Link to="/"><NavbarBrand>PlaniVacances</NavbarBrand></Link>
     <NavbarToggler on:click={() => (isOpen = !isOpen)} />
     <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
       <Nav class="ms-auto" navbar>

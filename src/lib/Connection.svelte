@@ -7,6 +7,7 @@
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
 
   let validated: boolean = false;
+  let isNewAccount: boolean = false;
 
   const navigate = useNavigate();
 
@@ -27,36 +28,6 @@
     })
 
   }
-
-  /*const login = async (email: string, password: string) => {
-    // Envoie de l'enregistrement utilisateur à l'API
-    const apiUrl = "http://localhost:8080/api/auth/login";
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      mode: "cors",
-      headers: {
-          "Content-Type": "application/json"
-        },
-      body: JSON.stringify({
-        mail: email,
-        password: password 
-      })
-    });
-
-    if (response.ok) {
-      console.log("Connexion au compte avec succès");
-      const token = await response.text();
-
-      if(token) {
-        setToken(token); // remonter via event dans composant parent ??
-        navigate("/");
-      } else {
-        console.error("Erreur lors de la récupération du token");
-      }
-    } else {
-      console.error("Erreur lors de la connexion au compte");
-    }
-  }*/
 </script>
 
 <h1>Connexion</h1>
@@ -68,7 +39,7 @@
     <InputPasswordWithToggle />
     <Link to="/register" class="primary">Pas encore de compte ?</Link>
     <Button color="primary" class="w-75 mb-3 mt-3">Connexion</Button>
-    <SignInGoogle />
+    <SignInGoogle {isNewAccount} />
   </Form>
 </section>
 

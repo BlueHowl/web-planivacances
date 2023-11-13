@@ -4,7 +4,18 @@
   import googleLogo from "../assets/logo-google.png";
   import { useNavigate } from "svelte-navigator";
 
+  export let isNewAccount: boolean;
+
   const navigate = useNavigate();
+
+  const onAddUser = async () => {
+    try {
+      await fetch("http://localhost:8080/api/users/number");
+    } catch (error: any) {
+      console.log("Erreur lors de la mise à jour du nombre d'utilisateurs");
+    }
+  };
+
 
   const handleSignIn = async () => {
     try {
