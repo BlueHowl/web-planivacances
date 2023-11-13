@@ -1,16 +1,18 @@
 import { verifyToken } from "./service/AuthService";
 import { createAuthInstance } from "./service/ApiClient";
-//import { writable } from 'svelte/store';
-
-//const token = writable("null");
 
 export let storedToken : string;
 
 const tempToken = localStorage.getItem("Token");
-if(tempToken != null && await verifyToken(tempToken)) {
-    storedToken = tempToken;
-    createAuthInstance(tempToken);
-}
+
+const checkToken = async () => {
+    if(tempToken != null && await verifyToken(tempToken)) {
+        storedToken = tempToken;
+        createAuthInstance(tempToken);
+    }
+};
+
+checkToken();
 
 //stocke un token valide
 
