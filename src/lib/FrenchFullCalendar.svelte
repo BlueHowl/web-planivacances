@@ -2,6 +2,8 @@
   import { createEventDispatcher, onMount } from "svelte";
   import { Calendar } from "@fullcalendar/core";
   import dayGridPlugin from "@fullcalendar/daygrid";
+  import { Button } from "sveltestrap";
+  import { exportCalendar } from "../service/CalendarService";}
 
   let calendar: Calendar;
   let dispatch = createEventDispatcher();
@@ -49,3 +51,5 @@
 </script>
 
 <div id="calendar" />
+
+<Button on:click={exportCalendar}>Exporter</Button>
