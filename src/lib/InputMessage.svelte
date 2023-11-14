@@ -1,56 +1,62 @@
 <script lang="ts">
-    import { FormGroup, Form, Input } from "sveltestrap";
-    import "@fortawesome/fontawesome-free/css/all.min.css";
-    import EmojiPicker from "./EmojiPicker.svelte";
-    import { createEventDispatcher } from "svelte";
-  
-    const dispatch = createEventDispatcher();
+  import { FormGroup, Form, Input } from "sveltestrap";
+  import "@fortawesome/fontawesome-free/css/all.min.css";
+  import EmojiPicker from "./EmojiPicker.svelte";
+  import { createEventDispatcher } from "svelte";
 
-    let messageText: string;
+  const dispatch = createEventDispatcher();
 
-    function onSubmit(e: any) {
-      e.preventDefault();
+  let messageText: string;
 
-      const formData = new FormData(e.target);
+  function onSubmit(e: any) {
+    e.preventDefault();
 
-      dispatch("send", {message: formData.get("message") as string});
+    if (messageText) {
+      dispatch("send", { message: messageText });
+      messageText = "";
     }
+  }
 
-    function appendEmoji(event: CustomEvent) {
-      messageText += event.detail.emoji;
-    }
-    
-  </script>
-  
-  <Form on:submit={onSubmit}>
-    <FormGroup>
+  function appendEmoji(event: CustomEvent) {
+    const inputMessage = document.getElementById("inputMessage");
+    const cursorPosition = inputMessage.selectionStart;
 
-      <EmojiPicker on:change={appendEmoji} />
+    messageText =
+      messageText.substring(0, cursorPosition) +
+      event.detail.emoji +
+      messageText.substring(cursorPosition);
+  }
+</script>
 
-      <div id="message-container">
-          <Input
-              textContent={messageText}
-              type={"text"}
-              name="message"
-              placeholder="Message"
-              required
-          />
+<Form on:submit={(e) => e.preventDefault()}>
+  <FormGroup>
+    <EmojiPicker on:change={appendEmoji} />
 
-          <i class="fa-regular fa-paper-plane" 
-              on:click={onSubmit}
-              on:keypress={onSubmit} />
-      </div>
-    </FormGroup>
-  </Form>
-  
-  <style>
-    #message-container {
-      display: flex;
-      align-items: center;
-    }
-  
-    #message-container > i {
-      margin-left: -30px;
-    }
-  </style>
-  
+    <div id="message-container">
+      <Input
+        id="inputMessage"
+        bind:value={messageText}
+        type="text"
+        name="message"
+        placeholder="Message"
+        required
+      />
+      <i
+        class="fa-regular fa-paper-plane"
+        on:click={onSubmit}
+        on:keypress={onSubmit}
+      />
+    </div>
+  </FormGroup>
+</Form>
+
+<style>
+  #message-container {
+    display: flex;
+    align-items: center;
+  }
+
+  #message-container > i {
+    margin-left: -30px;
+  }
+</style>
