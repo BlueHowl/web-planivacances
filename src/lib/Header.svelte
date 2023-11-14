@@ -17,7 +17,7 @@
 
   const location = useLocation();
   let isOpen = false;
-  let isConnected = false;
+  let isConnected = true;
   let profileConnected = "Maxime Cao";
 
   function handleUpdate(event: CustomEvent) {
