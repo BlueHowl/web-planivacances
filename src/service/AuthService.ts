@@ -1,18 +1,8 @@
 import { instance, createAuthInstance} from "./ApiClient";
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { firebaseConfig } from "../utils/config";
 import { setToken } from "../AuthToken";
-
-// Configuration Firebase TODO TODOOOOOO Déplacer dans un autre fichier
-const firebaseConfig = {
-    apiKey: "AIzaSyDEed69NWze9I39twdSl8a8SvZAOvO51QU",
-    authDomain: "planivacances.firebaseapp.com",
-    databaseURL: "https://planivacances-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "planivacances",
-    storageBucket: "planivacances.appspot.com",
-    messagingSenderId: "389100630019",
-    appId: "1:389100630019:web:11cfe216ccc49552511e36"
-};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);

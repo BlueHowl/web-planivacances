@@ -29,7 +29,7 @@
     .build();
 
 
-  const OnMessageReceived = (ws: Websocket, event: MessageEvent) => {
+  const onMessageReceived = (ws: Websocket, event: MessageEvent) => {
     console.log(`received message: ${event.data}`);
     addMessage(event.data, false);
   };
