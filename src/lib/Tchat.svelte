@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { useLocation } from "svelte-navigator";
   import {
     ArrayQueue,
@@ -9,11 +10,15 @@
   } from "websocket-ts";
   import InputMessage from "./InputMessage.svelte";
   import MessageItem from "./MessageItem.svelte";
+  import { formatTimestampForDisplay } from "../utils/DateFormatter";
 
   const location = useLocation();
 
   let definedHoliday = false;
   let title: string;
+  let uid = "usuzok367272";
+  let groupId = 1;
+  let displayName = "John Doe";
 
   let messages: any = [];
 
@@ -23,41 +28,47 @@
     title = state.title;
   }
 
-  const tchatWS = new WebsocketBuilder("ws://localhost:8080")
+  const tchatWS = new WebsocketBuilder(
+    "ws://localhost:8080/websocket-groupMessages"
+  )
     .withBuffer(new ArrayQueue()) // buffer messages when disconnected
     .withBackoff(new ConstantBackoff(1000)) // retry every 1s
     .build();
 
-
-  const onMessageReceived = (ws: Websocket, event: MessageEvent) => {
-    console.log(`received message: ${event.data}`);
-    addMessage(event.data, false);
+  const onMessageReceived = (i: Websocket, event: MessageEvent) => {
+    console.log(`received message:${event.data}`);
+    addMessage(event.data);
   };
 
-  function addMessage(message: any, isCurrentUser: boolean) {
-    message.isCurrentUser = isCurrentUser; //TODO fonctionne?
+  function addMessage(message: any) {
     messages = [...messages, message];
   }
 
-  tchatWS.addEventListener(WebsocketEvent.open, () =>
-    console.log("opened message websocket!")
-  );
-  tchatWS.addEventListener(WebsocketEvent.close, () =>
-    console.log("closed message websocket!")
-  );
-  tchatWS.addEventListener(WebsocketEvent.message, onMessageReceived);
-
   function sendMessage(event: CustomEvent) {
-    tchatWS.send(JSON.stringify(event.detail.message));
-    addMessage(
-      {
-        sender: "john.doe@gmail.com",
+    tchatWS.send(
+      JSON.stringify({
+        sender: uid,
+        displayName: displayName,
+        groupId: groupId,
         content: event.detail.message,
-        time: "13/11/23 - 18h45", // A faire côté serveur ?
-      },
-      false
+        time: Date.now(),
+      })
     );
   }
+
+  onMount(() => {
+    tchatWS.addEventListener(WebsocketEvent.open, () => {
+      console.log("opened message websocket!");
+
+      tchatWS.send(JSON.stringify({ command: "init", groupId: groupId }));
+    });
+
+    tchatWS.addEventListener(WebsocketEvent.close, () =>
+      console.log("closed message websocket!")
+    );
+
+    tchatWS.addEventListener(WebsocketEvent.message, onMessageReceived);
+  });
 </script>
 
 {#if definedHoliday}
@@ -65,10 +76,10 @@
   <section id="tchat">
     {#each messages as message (message)}
       <MessageItem
-        sender={message.sender}
+        sender={message.displayName}
         content={message.content}
-        time={message.time}
-        isCurrentUser={message.isCurrentUser}
+        time={formatTimestampForDisplay(message.time)}
+        isCurrentUser={message.sender === uid}
       />
     {/each}
   </section>

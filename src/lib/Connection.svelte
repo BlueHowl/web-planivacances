@@ -19,14 +19,13 @@
     const formData = new FormData(e.target);
 
     login(
-      formData.get("email") as string, 
-      formData.get("password") as string)
-    .then((result) => {
+      formData.get("email") as string,
+      formData.get("password") as string
+    ).then((result) => {
       if (result) {
         navigate("/");
       }
-    })
-
+    });
   }
 </script>
 

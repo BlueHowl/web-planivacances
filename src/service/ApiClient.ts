@@ -13,7 +13,7 @@ export function createAuthInstance(authToken : string) {
     instance = redaxios.create({
         baseURL: 'http://localhost:8080/api',
         headers: {
-            'Authorization': JSON.stringify(`Bearer ${authToken}`),
+            'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
         }
     });

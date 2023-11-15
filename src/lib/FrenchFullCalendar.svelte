@@ -3,7 +3,7 @@
   import { Calendar } from "@fullcalendar/core";
   import dayGridPlugin from "@fullcalendar/daygrid";
   import { Button } from "sveltestrap";
-  import { exportCalendar } from "../service/CalendarService";}
+  import { exportCalendar } from "../service/CalendarService";
 
   let calendar: Calendar;
   let dispatch = createEventDispatcher();

@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { firebaseConfig } from "../utils/config";
 import { setToken } from "../AuthToken";
+import { getUserDetails } from "./UserService";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -22,7 +23,6 @@ export async function verifyToken(token: string): Promise<boolean> {
             return false;
         }
     } catch (error) {
-        // Handle errors
         console.error(error);
         return false;
     }
@@ -40,6 +40,7 @@ export async function login(email: string, password: string): Promise<boolean> {
         if (tkn != null && await verifyToken(tkn)) {
             console.log("Connexion au compte avec succès");
             setToken(tkn);
+            await getUserDetails(tkn);
             return true;
         } else {
             console.error("Erreur lors de la connexion au compte");
@@ -65,6 +66,7 @@ export async function register(name: string, surname: string, email: string, pas
         if (tkn != null && await verifyToken(tkn)) {
             console.log("Création du compte avec succès");
             setToken(tkn);
+            getUserDetails(tkn);
             return true;
         } else {
             console.error("Erreur lors de la création du compte");
@@ -86,7 +88,7 @@ export const signInWithGoogle = async () => {
 
       if(await verifyToken(token)) {
         setToken(token);
-        //navigate("/");
+        getUserDetails(token);
         return true;
       }
     } catch (error) {
