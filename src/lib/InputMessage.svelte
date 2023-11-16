@@ -30,9 +30,10 @@
 
 <Form on:submit={(e) => e.preventDefault()}>
   <FormGroup>
-    <EmojiPicker on:change={appendEmoji} />
 
     <div id="message-container">
+      <EmojiPicker on:change={appendEmoji} />
+
       <Input
         id="inputMessage"
         bind:value={messageText}
@@ -46,6 +47,7 @@
         on:click={onSubmit}
         on:keypress={onSubmit}
       />
+
     </div>
   </FormGroup>
 </Form>

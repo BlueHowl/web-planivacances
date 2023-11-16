@@ -23,6 +23,6 @@
 
 <style>
   #emoji-button {
-    margin-bottom: 0.5rem;
+    padding: 0.3rem 0.2rem;
   }
 </style>
