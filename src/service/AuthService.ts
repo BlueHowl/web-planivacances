@@ -1,29 +1,48 @@
 import { instance, createAuthInstance} from "./ApiClient";
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithCustomToken } from "firebase/auth";
 import { firebaseConfig } from "../utils/config";
-import { setToken } from "../AuthToken";
-import { getUserDetails } from "./UserService";
+import { setCustomToken, getCustomToken } from "../AuthToken";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+
+getCustomToken().then((customToken: string|null) => {
+    if(customToken) {
+        authenticate(customToken);
+    }
+});
 
 export async function verifyToken(token: string): Promise<boolean> {
     createAuthInstance(token);
 
     try {
         const response = await instance.post<string>("/auth/token");
-        const tkn: string = response.data;
+        const result: boolean = JSON.parse(response.data);
 
-        if (tkn != null) {
-            console.log("Token valide");
-            return true;
-        } else {
-            console.error("Token invalide");
-            return false;
-        }
+        console.log(result ? "Token valide" : "Token invalide");
+
+        return result
     } catch (error) {
         console.error(error);
+
+        return false;
+    }
+}
+
+export async function authenticate(customToken: string): Promise<boolean> {
+    if (customToken != null) {
+        const credentials = await signInWithCustomToken(auth, customToken)
+        const token = await credentials.user.getIdToken(false);
+
+        console.log("Authentification réussie");
+        setCustomToken(customToken);
+        createAuthInstance(token);
+
+        return true;
+    } else {
+        console.error("Erreur lors de l'authentification'");
+
         return false;
     }
 }
@@ -35,20 +54,17 @@ export async function login(email: string, password: string): Promise<boolean> {
             password: password
         });
 
-        const tkn: string = response.data;
+        const customToken: string = response.data;
 
-        if (tkn != null && await verifyToken(tkn)) {
-            console.log("Connexion au compte avec succès");
-            setToken(tkn);
-            await getUserDetails(tkn);
-            return true;
-        } else {
-            console.error("Erreur lors de la connexion au compte");
-            return false;
-        }
+        const result = await authenticate(customToken);
+
+        console.log(result ? "Connexion au compte avec succès" : "Erreur lors de la connexion au compte");
+
+        return result
+
     } catch (error) {
-        // Handle errors
         console.error(error);
+
         return false;
     }
 }
@@ -61,38 +77,37 @@ export async function register(name: string, surname: string, email: string, pas
             password: password
         });
 
-        const tkn: string = response.data;
+        const customToken: string = response.data;
 
-        if (tkn != null && await verifyToken(tkn)) {
-            console.log("Création du compte avec succès");
-            setToken(tkn);
-            getUserDetails(tkn);
-            return true;
-        } else {
-            console.error("Erreur lors de la création du compte");
-            return false;
-        }
+        const result = await authenticate(customToken)
+
+        console.log(result ? "Création du compte avec succès" : "Erreur lors de la création du compte")
+
+        return result
     } catch (error) {
-        // Handle errors
         console.error(error);
+
         return false;
     }
 }
-
 
 export const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      const token = await result.user.getIdToken();
+      const token = await result.user.getIdToken(false);
 
       if(await verifyToken(token)) {
-        setToken(token);
-        getUserDetails(token);
+        createAuthInstance(token);
         return true;
       }
     } catch (error) {
       console.error(error);
+
       return false;
     }
 };
+
+export function getUid() {
+    return auth.currentUser?.uid;
+}

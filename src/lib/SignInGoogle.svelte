@@ -42,6 +42,7 @@
   class="w-75 m-auto"
   style="display:flex;justify-content:center;align-items:center;"
   color="light"
+  type="button"
   on:click={handleSignIn}
   ><img src={googleLogo} alt="Logo Google" />Continuer avec Google</Button>
 

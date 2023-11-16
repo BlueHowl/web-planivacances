@@ -1,10 +1,10 @@
 import { instance, createAuthInstance} from "./ApiClient";
 
-export async function getUserDetails(token:string): Promise<Boolean> {
+/*export async function getUserDetails(token:string): Promise<Boolean> {
     console.log(token);
-     createAuthInstance(token);
-        try {
-            console.dir(instance);
+    createAuthInstance(token);
+    try {
+        console.dir(instance);
         const response = await instance.post("/users");
 
         if(response) {
@@ -17,4 +17,4 @@ export async function getUserDetails(token:string): Promise<Boolean> {
         console.log(error);
         return false;
     }
-}
+}*/

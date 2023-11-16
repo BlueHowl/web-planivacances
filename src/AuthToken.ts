@@ -1,25 +1,11 @@
-import { verifyToken } from "./service/AuthService";
-import { createAuthInstance } from "./service/ApiClient";
-
-export let storedToken : string;
-
-const tempToken = localStorage.getItem("Token");
-
-const checkToken = async () => {
-    if(tempToken != null && await verifyToken(tempToken)) {
-        storedToken = tempToken;
-        createAuthInstance(tempToken);
-    }
+export const getCustomToken = async () => {
+    return localStorage.getItem("ResfreshToken");
 };
 
-checkToken();
+//stocke un customToken valide
 
-//stocke un token valide
-
-export function setToken(token: string) {
-    localStorage.setItem('Token', token);
-    storedToken = token;
-    createAuthInstance(token);
+export const setCustomToken = (customToken: string) => {
+    localStorage.setItem('ResfreshToken', customToken);
 }
 
 /*export function getToken() { ou acces direct?

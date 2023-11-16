@@ -32,7 +32,7 @@
     "ws://localhost:8080/websocket-groupMessages"
   )
     .withBuffer(new ArrayQueue()) // buffer messages when disconnected
-    .withBackoff(new ConstantBackoff(1000)) // retry every 1s
+    .withBackoff(new ConstantBackoff(3000)) // retry every 3s
     .build();
 
   const onMessageReceived = (i: Websocket, event: MessageEvent) => {
