@@ -108,6 +108,7 @@ export const signInWithGoogle = async (provider: string) => {
     try {
         const authProvider = (provider == "google" ? googleProvider : (provider == "facebook" ? facebookProvider : twitterProvider));
 
+        authProvider.addScope('email');
         authProvider.setCustomParameters({
             'lang': auth.languageCode!
         });
