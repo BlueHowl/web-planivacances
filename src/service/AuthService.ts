@@ -1,11 +1,21 @@
 import { instance, createAuthInstance} from "./ApiClient";
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithCustomToken } from "firebase/auth";
+import { 
+    getAuth, 
+    GoogleAuthProvider, 
+    FacebookAuthProvider, 
+    TwitterAuthProvider,
+    signInWithPopup, 
+    signInWithCustomToken 
+} from "firebase/auth";
 import { firebaseConfig } from "../utils/config";
 import { setCustomToken, getCustomToken } from "../AuthToken";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+
+auth.useDeviceLanguage();
+
 
 getCustomToken().then((customToken: string|null) => {
     if(customToken) {
@@ -91,16 +101,24 @@ export async function register(name: string, surname: string, email: string, pas
     }
 }
 
-export const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
+export const signInWithGoogle = async (provider: string) => {
+    const googleProvider = new GoogleAuthProvider();
+    const facebookProvider = new FacebookAuthProvider();
+    const twitterProvider = new TwitterAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      const token = await result.user.getIdToken(false);
+        const authProvider = (provider == "google" ? googleProvider : (provider == "facebook" ? facebookProvider : twitterProvider));
 
-      if(await verifyToken(token)) {
-        createAuthInstance(token);
-        return true;
-      }
+        authProvider.setCustomParameters({
+            'lang': auth.languageCode!
+        });
+
+        const result = await signInWithPopup(auth, authProvider);
+        const token = await result.user.getIdToken(false);
+
+        if(await verifyToken(token)) {
+            createAuthInstance(token);
+            return true;
+        }
     } catch (error) {
       console.error(error);
 

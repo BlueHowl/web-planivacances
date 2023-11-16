@@ -5,6 +5,8 @@
   import { login } from "../service/AuthService";
   import SignInGoogle from "./SignInGoogle.svelte";
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
+    import SignInFacebook from "./SignInFacebook.svelte";
+    import SignInX from "./SignInX.svelte";
 
   let validated: boolean = false;
   let isNewAccount: boolean = false;
@@ -39,6 +41,8 @@
     <Link to="/register" class="primary">Pas encore de compte ?</Link>
     <Button color="primary" class="w-75 mb-3 mt-3">Connexion</Button>
     <SignInGoogle {isNewAccount} />
+    <SignInFacebook {isNewAccount} />
+    <SignInX {isNewAccount} />
   </Form>
 </section>
 
