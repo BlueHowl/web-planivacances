@@ -6,10 +6,13 @@ import {
     FacebookAuthProvider, 
     TwitterAuthProvider,
     signInWithPopup, 
-    signInWithCustomToken 
+    signInWithCustomToken,
+    signOut
 } from "firebase/auth";
+import { userStore } from "../stores/User";
+import type { User } from '../model/User';
 import { firebaseConfig } from "../utils/config";
-import { setCustomToken, getCustomToken } from "../AuthToken";
+import { setCustomToken, getCustomToken, clearCustomToken } from "../AuthToken";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -47,8 +50,8 @@ export async function authenticate(customToken: string): Promise<boolean> {
 
         console.log("Authentification réussie");
         setCustomToken(customToken);
-        createAuthInstance(token);
-
+        createAuthInstance(token); 
+        await setCurrentUser();
         return true;
     } else {
         console.error("Erreur lors de l'authentification'");
@@ -101,14 +104,10 @@ export async function register(name: string, surname: string, email: string, pas
     }
 }
 
-export const signInWithGoogle = async (provider: string) => {
-    const googleProvider = new GoogleAuthProvider();
-    const facebookProvider = new FacebookAuthProvider();
-    const twitterProvider = new TwitterAuthProvider();
+export const signInWithOtherProvider = async (provider: string) => {    
     try {
-        const authProvider = (provider == "google" ? googleProvider : (provider == "facebook" ? facebookProvider : twitterProvider));
-
-        authProvider.addScope('email');
+        const authProvider = (provider == "google" ? new GoogleAuthProvider() : (provider == "facebook" ? new FacebookAuthProvider() : new TwitterAuthProvider()));
+        authProvider.addScope("email");
         authProvider.setCustomParameters({
             'lang': auth.languageCode!
         });
@@ -118,6 +117,7 @@ export const signInWithGoogle = async (provider: string) => {
 
         if(await verifyToken(token)) {
             createAuthInstance(token);
+            await setCurrentUser();
             return true;
         }
     } catch (error) {
@@ -127,6 +127,33 @@ export const signInWithGoogle = async (provider: string) => {
     }
 };
 
-export function getUid() {
-    return auth.currentUser?.uid;
+async function setCurrentUser() {
+    if(auth.currentUser != null) {
+        const user: User = {
+            uid: auth.currentUser.uid,
+            email: auth.currentUser.email || '',
+            displayName: auth.currentUser.displayName || ''
+          }; 
+
+          if (!user.email) {
+            try {
+               user.email = auth.currentUser?.providerData[0]?.email || ''
+            } catch (error) {
+                console.error("Erreur lors de la récupération de l'email de l'utilisateur :", error);
+            }
+        }
+        userStore.set(user)
+    }
+}
+
+
+function clearCurrentUser() {
+    userStore.set(null);
+}
+
+
+export function disconnect() {
+    signOut(auth);
+    clearCustomToken();
+    clearCurrentUser();
 }

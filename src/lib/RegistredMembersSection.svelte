@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { Link } from "svelte-navigator";
+  import { userStore } from "../stores/User";
   let counterMembers: number = 0;
   let eventSource: EventSource;
 
@@ -23,8 +24,6 @@
       eventSource.close();
     }
   });
-
-  let isConnected: Boolean = false;
 </script>
 
 <section id="numberRegistredMembers" class="bg-primary">
@@ -33,7 +32,7 @@
     {counterMembers > 1 ? "membres" : "membre"}
     !
   </p>
-  {#if !isConnected}
+  {#if !$userStore}
     <Link class="text-white text-decoration-underline" to="/register"
       >Cliquez ici pour nous rejoindre</Link
     >

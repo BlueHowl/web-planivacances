@@ -1,9 +1,9 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
   import { Form, FormGroup, Input, Button } from "sveltestrap";
+  import { userStore } from "../stores/User";
   const navigate = useNavigate();
-  let isConnected: Boolean = true;
-  let mail = isConnected ? "maxime123.cao@gmail.com" : "";
+  let mail = $userStore?.email;
   let subject = "";
   let message = "";
 
@@ -42,7 +42,7 @@
 <section id="contactForm">
   <Form on:submit={handleSubmit}>
     <FormGroup floating label="Votre email">
-      {#if isConnected}
+      {#if $userStore}
         <Input type="email" name="email" value={mail} disabled />
       {:else}
         <Input type="email" name="email" bind:value={mail} />

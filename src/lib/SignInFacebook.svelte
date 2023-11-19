@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { signInWithGoogle } from "../service/AuthService";
+  import { signInWithOtherProvider } from "../service/AuthService";
   import { Button } from "sveltestrap";
   import facebookLogo from "../assets/logo-facebook.png";
   import { useNavigate } from "svelte-navigator";
@@ -16,24 +16,23 @@
     }
   };
 
-
   const handleSignIn = async () => {
     try {
-      const result = await signInWithGoogle("facebook");
+      const result = await signInWithOtherProvider("facebook");
 
       if (result) {
-        console.log('Authentication Facebook réussie');
+        console.log("Authentication Facebook réussie");
 
-        if(isNewAccount) {
+        if (isNewAccount) {
           onAddUser();
         }
 
         navigate("/");
       } else {
-        console.log('Problème Authentication Facebook');
+        console.log("Problème Authentication Facebook");
       }
     } catch (error) {
-      console.error('Erreur durant la connexion facebook:', error);
+      console.error("Erreur durant la connexion facebook:", error);
     }
   };
 </script>
@@ -44,7 +43,8 @@
   color="light"
   type="button"
   on:click={handleSignIn}
-  ><img src={facebookLogo} alt="Logo Facebook" />Continuer avec Facebook</Button>
+  ><img src={facebookLogo} alt="Logo Facebook" />Continuer avec Facebook</Button
+>
 
 <style>
   img {

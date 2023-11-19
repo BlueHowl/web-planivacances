@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { signInWithGoogle } from "../service/AuthService";
+  import { signInWithOtherProvider } from "../service/AuthService";
   import { Button } from "sveltestrap";
   import googleLogo from "../assets/logo-google.png";
   import { useNavigate } from "svelte-navigator";
@@ -16,24 +16,23 @@
     }
   };
 
-
   const handleSignIn = async () => {
     try {
-      const result = await signInWithGoogle("google");
+      const result = await signInWithOtherProvider("google");
 
       if (result) {
-        console.log('Authentication Google réussie');
+        console.log("Authentication Google réussie");
 
-        if(isNewAccount) {
+        if (isNewAccount) {
           onAddUser();
         }
 
         navigate("/");
       } else {
-        console.log('Problème Authentication Google');
+        console.log("Problème Authentication Google");
       }
     } catch (error) {
-      console.error('Erreur durant la connexion google:', error);
+      console.error("Erreur durant la connexion google:", error);
     }
   };
 </script>
@@ -44,7 +43,8 @@
   color="light"
   type="button"
   on:click={handleSignIn}
-  ><img src={googleLogo} alt="Logo Google" />Continuer avec Google</Button>
+  ><img src={googleLogo} alt="Logo Google" />Continuer avec Google</Button
+>
 
 <style>
   img {
