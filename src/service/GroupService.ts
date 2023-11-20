@@ -3,17 +3,24 @@ import type { GroupMap } from "../model/GroupMap";
 import { groupListStore } from "../stores/group";
 import { instance } from "./ApiClient";
 
-const groups: GroupMap = {};
+export async function createGroup(group: Group): Promise<string|null> {
+    try {
+        const response = await instance.post<string>(`/group`, group);
 
-/*export async function getGroups(): Promise<Array<Group>> {
-    if(Object.keys(groups).length == 0) {
-        loadUserGroups();
+        if(response.status == 200) {
+            return response.data;
+        }
+        
+    } catch (error) {
+        console.error(error);
     }
 
-    return Object.values(groups);
-}*/
+    return null;
+}
 
 export async function loadUserGroups() {
+    const groups: GroupMap = {};
+
     try {
         const response = await instance.get<string>(`/group/list`);
 

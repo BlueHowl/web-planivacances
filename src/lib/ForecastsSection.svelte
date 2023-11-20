@@ -5,16 +5,15 @@
   import { groupListStore } from "../stores/group";
   import { currentGroupId } from "../stores/currentGroup";
   import type { GroupMap } from "../model/GroupMap";
+    import type { Place } from "../model/Place";
 
   let forecasts: any = [];
   let errorMessage: string = "";
 
-  let groups: GroupMap = $groupListStore || {};
-  
-  let group = groups[$currentGroupId];
+  export let place: Place;
 
   const getWeather = async () => {
-    forecasts = await getWeatherData(group.place.lat, group.place.lon);
+    forecasts = await getWeatherData(place.lat, place.lon);
   }
 
  onMount(() => {

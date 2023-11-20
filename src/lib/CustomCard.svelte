@@ -9,7 +9,7 @@
     CardText,
   } from "sveltestrap";
 
-  export let id: number;
+  export let id: string;
   export let title: string;
   export let startDate: string;
   export let endDate: string;

@@ -1,20 +1,58 @@
 <script lang="ts">
   import { Form, FormGroup, Input, Button } from "sveltestrap";
-  let addresses = [
-    { id: 1, completeAddress: "Rue des Pottiers 3 2344 LoveCity" },
-    { id: 2, completeAddress: "Rue de Harlez 25 4000 Liège" },
-  ];
+  import type { Group } from "../model/Group";
+  import { createGroup } from "../service/GroupService";
+  import LocationPicker from "./LocationPicker.svelte";
+  import { format } from "date-fns";
+  import { useNavigate } from "svelte-navigator";
+    import { currentGroupId } from "../stores/currentGroup";
+
+  const navigate = useNavigate();
+
+  let group: Group = {
+    gid: "",
+    groupName: "",
+    description: "",
+    startDate: "",
+    endDate: "",
+    place: null,
+    owner: ""
+  };
+
+  function handleLocationPicker(event: CustomEvent) {
+    group.place = event.detail.selectedPlace;
+  }
+
+  function onSubmit(e: any) {
+    e.preventDefault();
+
+    group.startDate = format(new Date(group.startDate), "yyyy-MM-dd'T'HH:mm:ss.SSS");
+    group.endDate = format(new Date(group.endDate), "yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+    createGroup(group).then((gid: string|null) => {
+      if(gid != null) {
+        navigate("/holidayDetails")
+        currentGroupId.set(gid);
+      } else {
+        console.error("Erreur lors de la création du groupe");
+      }
+    });
+  }
 </script>
 
 <h1>Ajout d'une période de vacances</h1>
 <section id="addHolidayForm">
-  <Form>
+  <Form> <!--on:submit={(e) => e.preventDefault()}>-->
     <FormGroup floating label="Titre des vacances">
-      <Input id="holidayTitle" name="holidayTitle" />
+      <Input 
+      id="holidayTitle"
+      bind:value={group.groupName} 
+      name="holidayTitle" />
     </FormGroup>
     <FormGroup floating label="Date de début">
       <Input
         id="startHolidayDate"
+        bind:value={group.startDate}
         type="date"
         name="startHolidayDate"
         style="margin-right:0.2rem;"
@@ -23,26 +61,32 @@
     <FormGroup floating label="Date de fin">
       <Input
         id="endHolidayDate"
+        bind:value={group.endDate}
         type="date"
         name="endHolidayDate"
         style="margin-right:0.2rem;"
       />
     </FormGroup>
-    <FormGroup floating label="Lieu">
-      <Input type="select" name="holidayPlace" id="holidayPlace">
+    <!--<FormGroup floating label="Lieu">
+      <Input 
+      id="holidayPlace"
+      type="select" 
+      name="holidayPlace">
         {#each addresses as address}
           <option value={address.id}>{address.completeAddress}</option>
         {/each}
       </Input>
-    </FormGroup>
+    </FormGroup>-->
+    <LocationPicker on:place={handleLocationPicker}></LocationPicker>
     <FormGroup floating label="Ecrivez une description ici...">
       <Input
         id="holidayDescription"
+        bind:value={group.description}
         type="textarea"
         name="holidayDescription"
       />
     </FormGroup>
-    <Button color="primary" class="w-75 mb-3 mt-3">Ajouter</Button>
+    <Button color="primary" class="w-75 mb-3 mt-3" on:click={onSubmit}>Ajouter</Button>
   </Form>
 </section>
 

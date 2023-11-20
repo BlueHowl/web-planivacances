@@ -1,11 +1,11 @@
 import type { Place } from "./Place";
 
 export type Group = {
-    gid: number;
+    gid: string;
     groupName: string;
     description: string;
     startDate: string;
     endDate: string;
-    place: Place;
+    place: Place|null;
     owner: string;
 };

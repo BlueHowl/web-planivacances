@@ -5,7 +5,7 @@
   import { loadUserGroups } from "../service/GroupService";
   import type { Group } from "../model/Group";
   import { onMount } from "svelte";
-    import { currentGroupId } from "../stores/currentGroup";
+  import { currentGroupId } from "../stores/currentGroup";
 
   const navigate = useNavigate();
 
