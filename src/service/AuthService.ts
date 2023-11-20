@@ -9,7 +9,7 @@ import {
     signInWithCustomToken,
     signOut
 } from "firebase/auth";
-import { userStore } from "../stores/User";
+import { userStore } from "../stores/user";
 import type { User } from '../model/User';
 import { firebaseConfig } from "../utils/config";
 import { setCustomToken, getCustomToken, clearCustomToken } from "../AuthToken";

@@ -9,7 +9,7 @@ export async function exportCalendar() {
     const calendar: string = response.data;
 
         if (calendar != null) {
-            downloadICSFile(calendar, "fake");
+            downloadICSFile(calendar, "Calendrier Planivacances");
         } else {
             console.error("Erreur lors de la récupération du calendrier");
         }
