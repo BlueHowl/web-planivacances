@@ -5,7 +5,6 @@
   import { currentGroupId } from "../stores/currentGroup";
 
 
-
   let groups: GroupMap = $groupListStore || {};
   
   let group = groups[$currentGroupId];
