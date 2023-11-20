@@ -5,6 +5,7 @@
   import { loadUserGroups } from "../service/GroupService";
   import type { Group } from "../model/Group";
   import { onMount } from "svelte";
+    import { currentGroupId } from "../stores/currentGroup";
 
   const navigate = useNavigate();
 
@@ -23,7 +24,7 @@
 
   function handleNavToDetails(event: CustomEvent) {
     navigate("/holidayDetails");
-    
+    currentGroupId.set(event.detail.id);
     /*,{
       state: holidays.find((elem) => elem.id === event.detail.id),
     });*/

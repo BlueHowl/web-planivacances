@@ -18,7 +18,6 @@ export async function loadUserGroups() {
         const response = await instance.get<string>(`/group/list`);
 
         if(response.status == 200) {
-            console.log(response.data);
             const groupList = response.data as unknown as Array<Group>;
 
             groupList.forEach(group => {
