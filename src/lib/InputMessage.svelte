@@ -8,6 +8,12 @@
 
   let messageText: string;
 
+  function handleKeyPress(event: KeyboardEvent) {
+    if (event.key === "Enter") {
+      onSubmit(event);
+    }
+  }
+
   function onSubmit(e: any) {
     e.preventDefault();
 
@@ -41,6 +47,7 @@
         name="message"
         placeholder="Message"
         required
+        on:keydown={handleKeyPress}
       />
       <i
         class="fa-regular fa-paper-plane"

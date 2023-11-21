@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { Websocket } from "websocket-ts";
   import { CompatClient, Stomp, StompHeaders } from "@stomp/stompjs";
   import InputMessage from "./InputMessage.svelte";
   import MessageItem from "./MessageItem.svelte";
@@ -9,6 +8,7 @@
   import { getIdToken } from "../service/AuthService";
   import { groupListStore } from "../stores/group";
   import { currentGroupId as currentGroupId } from "../stores/currentGroup";
+  import type { GroupMap } from "../model/GroupMap";
 
   let definedHoliday = false;
   let messages: any = [];
