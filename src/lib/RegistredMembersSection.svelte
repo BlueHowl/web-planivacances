@@ -7,7 +7,7 @@
 
   onMount(() => {
     eventSource = new EventSource(
-      "https://studapps.cg.helmo.be:5011/REST_CAO_BART/api/users/number/flux"
+      "http://localhost:8080/api/users/number/flux"//"https://studapps.cg.helmo.be:5011/REST_CAO_BART/api/users/number/flux"
     );
 
     eventSource.onmessage = (event) => {

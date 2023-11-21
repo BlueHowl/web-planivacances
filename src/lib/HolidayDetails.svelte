@@ -8,6 +8,7 @@
   import { groupListStore } from "../stores/group";
   import type { GroupMap } from "../model/GroupMap";
   import { currentGroupId as currentGroupId } from "../stores/currentGroup";
+    import { sendGroupInvite } from "../service/GroupService";
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -20,9 +21,20 @@
   let formattedEndDate = format(new Date(group.endDate), "dd/MM/yyyy");
 
   function addMemberToHoliday() {
-    const mail = window.prompt(
+    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const mail: string | null = window.prompt(
       "Ajout d'un membre au voyage\nEntrez ci-dessous l’email de l’utilisateur à ajouter..."
     );
+
+    if (mail !== null) {
+      if (emailRegex.test(mail)) {
+        sendGroupInvite(group.gid, mail);
+      } else {
+        alert("Adresse e-mail invalide. Veuillez entrer une adresse e-mail valide.");
+      }
+    }
+    
   }
 
   function handleUpdateHoliday() {
