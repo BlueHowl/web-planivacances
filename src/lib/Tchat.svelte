@@ -60,7 +60,9 @@
     onMount(async () => {
       const token = await getIdToken();
       if (token != null) {
-        tchatWS = Stomp.client("ws://localhost:8080/websocket-groupMessages");
+        tchatWS = Stomp.client(
+          "wss://studapps.cg.helmo.be:5011/REST_CAO_BART/websocket-groupMessages"
+        );
 
         headers = {
           Authorization: `Bearer ${token}`,

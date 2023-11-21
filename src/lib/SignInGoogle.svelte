@@ -10,7 +10,9 @@
 
   const onAddUser = async () => {
     try {
-      await fetch("http://localhost:8080/api/users/number");
+      await fetch(
+        "https://studapps.cg.helmo.be:5011/REST_CAO_BART/api/users/number"
+      );
     } catch (error: any) {
       console.log("Erreur lors de la mise à jour du nombre d'utilisateurs");
     }

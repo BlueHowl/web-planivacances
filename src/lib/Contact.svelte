@@ -12,7 +12,7 @@
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/users/admin/message",
+        "https://studapps.cg.helmo.be:5011/REST_CAO_BART/api/users/admin/message",
         {
           method: "POST",
           headers: {

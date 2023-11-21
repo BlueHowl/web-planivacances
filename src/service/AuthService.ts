@@ -61,16 +61,7 @@ export async function authenticate(customToken: string): Promise<boolean> {
 }
 
 export async function getIdToken() {
-    const customToken = await getCustomToken();
-
-    if(customToken) {
-        const credentials = await signInWithCustomToken(auth, customToken)
-        const token = await credentials.user.getIdToken(false);
-
-        return token;
-    }
-
-    return null;
+    return auth?.currentUser?.getIdToken();
 }
 
 export async function login(email: string, password: string): Promise<boolean> {
