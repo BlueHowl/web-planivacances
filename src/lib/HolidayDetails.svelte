@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useLocation, useNavigate } from "svelte-navigator";
   import { Button, FormGroup } from "sveltestrap";
-  import { format } from 'date-fns';
+  import { format } from "date-fns";
   import Calendar from "../assets/calendrier.png";
   import Weather from "../assets/meteo.png";
   import Tchat from "../assets/tchat.png";
@@ -13,12 +13,11 @@
   const navigate = useNavigate();
 
   let groups: GroupMap = $groupListStore || {};
-  
+
   let group = groups[$currentGroupId];
   let address = `${group.place.street}, ${group.place.number} ${group.place.city} ${group.place.country}`;
   let formattedStartDate = format(new Date(group.startDate), "dd/MM/yyyy");
   let formattedEndDate = format(new Date(group.endDate), "dd/MM/yyyy");
-
 
   function addMemberToHoliday() {
     const mail = window.prompt(
@@ -27,7 +26,7 @@
   }
 
   function handleUpdateHoliday() {
-    navigate("/updateHoliday", { state: $location.state });
+    navigate("/updateHoliday");
   }
 
   function onGoToPlanning() {
@@ -35,13 +34,11 @@
   }
 
   function onGoToWeather() {
-    navigate("/weather", { state: { place: $location.state.place } });
+    navigate("/weather");
   }
 
   function onGoToTchat() {
-    navigate("/tchat", {
-      state: { id: $location.state.id, title: $location.state.title },
-    });
+    navigate("/tchat");
   }
 </script>
 

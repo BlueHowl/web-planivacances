@@ -12,19 +12,18 @@
   let groups: Group[] = [];
 
   onMount(() => {
-    const unsubscribe = groupListStore.subscribe(value => {
+    const unsubscribe = groupListStore.subscribe((value) => {
       groups = Object.values(value ?? {}) || [];
     });
 
     return unsubscribe;
   });
 
-  loadUserGroups(); //todo only once ??
-
+  loadUserGroups();
 
   function handleNavToDetails(event: CustomEvent) {
-    navigate("/holidayDetails");
     currentGroupId.set(event.detail.id);
+    navigate("/holidayDetails");
   }
 </script>
 

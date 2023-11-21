@@ -5,7 +5,7 @@
   import LocationPicker from "./LocationPicker.svelte";
   import { format } from "date-fns";
   import { useNavigate } from "svelte-navigator";
-    import { currentGroupId } from "../stores/currentGroup";
+  import { currentGroupId } from "../stores/currentGroup";
 
   const navigate = useNavigate();
 
@@ -16,7 +16,7 @@
     startDate: "",
     endDate: "",
     place: null,
-    owner: ""
+    owner: "",
   };
 
   function handleLocationPicker(event: CustomEvent) {
@@ -26,13 +26,19 @@
   function onSubmit(e: any) {
     e.preventDefault();
 
-    group.startDate = format(new Date(group.startDate), "yyyy-MM-dd'T'HH:mm:ss.SSS");
-    group.endDate = format(new Date(group.endDate), "yyyy-MM-dd'T'HH:mm:ss.SSS");
+    group.startDate = format(
+      new Date(group.startDate),
+      "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    );
+    group.endDate = format(
+      new Date(group.endDate),
+      "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    );
 
-    createGroup(group).then((gid: string|null) => {
-      if(gid != null) {
-        navigate("/holidayDetails")
+    createGroup(group).then((gid: string | null) => {
+      if (gid != null) {
         currentGroupId.set(gid);
+        navigate("/holidayDetails");
       } else {
         console.error("Erreur lors de la création du groupe");
       }
@@ -42,12 +48,14 @@
 
 <h1>Ajout d'une période de vacances</h1>
 <section id="addHolidayForm">
-  <Form> <!--on:submit={(e) => e.preventDefault()}>-->
+  <Form>
+    <!--on:submit={(e) => e.preventDefault()}>-->
     <FormGroup floating label="Titre des vacances">
-      <Input 
-      id="holidayTitle"
-      bind:value={group.groupName} 
-      name="holidayTitle" />
+      <Input
+        id="holidayTitle"
+        bind:value={group.groupName}
+        name="holidayTitle"
+      />
     </FormGroup>
     <FormGroup floating label="Date de début">
       <Input
@@ -77,7 +85,7 @@
         {/each}
       </Input>
     </FormGroup>-->
-    <LocationPicker on:place={handleLocationPicker}></LocationPicker>
+    <LocationPicker on:place={handleLocationPicker} />
     <FormGroup floating label="Ecrivez une description ici...">
       <Input
         id="holidayDescription"
@@ -86,7 +94,9 @@
         name="holidayDescription"
       />
     </FormGroup>
-    <Button color="primary" class="w-75 mb-3 mt-3" on:click={onSubmit}>Ajouter</Button>
+    <Button color="primary" class="w-75 mb-3 mt-3" on:click={onSubmit}
+      >Ajouter</Button
+    >
   </Form>
 </section>
 

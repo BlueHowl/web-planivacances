@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { useLocation } from "svelte-navigator";
   import { Websocket } from "websocket-ts";
   import { CompatClient, Stomp, StompHeaders } from "@stomp/stompjs";
   import InputMessage from "./InputMessage.svelte";
@@ -8,6 +7,8 @@
   import { formatTimestampForDisplay } from "../utils/DateFormatter";
   import { userStore } from "../stores/User";
   import { getIdToken } from "../service/AuthService";
+  import { groupListStore } from "../stores/group";
+  import { currentGroupId as currentGroupId } from "../stores/currentGroup";
 
   let definedHoliday = false;
   let messages: any = [];
@@ -15,10 +16,11 @@
   let title: string;
   let groupId: string;
   let displayName: string;
-  const location = useLocation();
   let headers: StompHeaders | undefined;
-
   let tchatWS: CompatClient | null;
+
+  let groups: GroupMap = $groupListStore || {};
+  let group = groups[$currentGroupId];
 
   function sendMessage(event: CustomEvent) {
     if (tchatWS != null && headers != undefined) {
@@ -40,11 +42,10 @@
     uid = $userStore.uid;
     displayName = $userStore.displayName;
 
-    if (location && $location.state) {
+    if (group) {
       definedHoliday = true;
-      const state = $location.state;
-      groupId = state.id;
-      title = state.title;
+      groupId = group.gid;
+      title = group.groupName;
     }
 
     const onMessageReceived = (message: any) => {
