@@ -1,74 +1,88 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { useLocation } from "svelte-navigator";
-  import {
-    ArrayQueue,
-    ConstantBackoff,
-    Websocket,
-    WebsocketBuilder,
-    WebsocketEvent,
-  } from "websocket-ts";
+  import { Websocket } from "websocket-ts";
+  import { CompatClient, Stomp, StompHeaders } from "@stomp/stompjs";
   import InputMessage from "./InputMessage.svelte";
   import MessageItem from "./MessageItem.svelte";
   import { formatTimestampForDisplay } from "../utils/DateFormatter";
-
-  const location = useLocation();
+  import { userStore } from "../stores/User";
+  import { getIdToken } from "../service/AuthService";
 
   let definedHoliday = false;
-  let title: string;
-  let uid = "usuzok367272";
-  let groupId = 1;
-  let displayName = "John Doe";
-
   let messages: any = [];
+  let uid: string;
+  let title: string;
+  let groupId: string;
+  let displayName: string;
+  const location = useLocation();
+  let headers: StompHeaders | undefined;
 
-  if (location && $location.state) {
-    definedHoliday = true;
-    const state = $location.state;
-    title = state.title;
-  }
-
-  const tchatWS = new WebsocketBuilder(
-    "ws://localhost:8080/websocket-groupMessages"
-  )
-    .withBuffer(new ArrayQueue()) // buffer messages when disconnected
-    .withBackoff(new ConstantBackoff(3000)) // retry every 3s
-    .build();
-
-  const onMessageReceived = (i: Websocket, event: MessageEvent) => {
-    console.log(`received message:${event.data}`);
-    addMessage(event.data);
-  };
-
-  function addMessage(message: any) {
-    messages = [...messages, message];
-  }
+  let tchatWS: CompatClient | null;
 
   function sendMessage(event: CustomEvent) {
-    tchatWS.send(
-      JSON.stringify({
-        sender: uid,
-        displayName: displayName,
-        groupId: groupId,
-        content: event.detail.message,
-        time: Date.now(),
-      })
-    );
+    if (tchatWS != null && headers != undefined) {
+      tchatWS.send(
+        "/app/message",
+        headers,
+        JSON.stringify({
+          sender: uid,
+          displayName: displayName,
+          groupId: groupId,
+          content: event.detail.message,
+          time: Date.now(),
+        })
+      );
+    }
   }
 
-  onMount(() => {
-    tchatWS.addEventListener(WebsocketEvent.open, () => {
-      console.log("opened message websocket!");
+  if ($userStore) {
+    uid = $userStore.uid;
+    displayName = $userStore.displayName;
 
-      tchatWS.send(JSON.stringify({ command: "init", groupId: groupId }));
+    if (location && $location.state) {
+      definedHoliday = true;
+      const state = $location.state;
+      groupId = state.id;
+      title = state.title;
+    }
+
+    const onMessageReceived = (message: any) => {
+      message = JSON.parse(message.body);
+      addMessage(message);
+    };
+
+    function addMessage(message: any) {
+      messages = [...messages, message];
+    }
+
+    onMount(async () => {
+      const token = await getIdToken();
+      if (token != null) {
+        tchatWS = Stomp.client("ws://localhost:8080/websocket-groupMessages");
+
+        headers = {
+          Authorization: `Bearer ${token}`,
+          GroupId: groupId,
+        };
+
+        tchatWS.connect(headers, () => {
+          console.log("WebSocket connecté");
+          tchatWS?.subscribe(
+            "/user/group/messages",
+            (message) => {
+              onMessageReceived(message);
+            },
+            headers
+          );
+          onDestroy(() => {
+            tchatWS?.unsubscribe("/user/group/messages", headers);
+            tchatWS?.disconnect();
+          });
+        });
+      }
     });
-
-    tchatWS.addEventListener(WebsocketEvent.close, () =>
-      console.log("closed message websocket!")
-    );
-
-    tchatWS.addEventListener(WebsocketEvent.message, onMessageReceived);
-  });
+  }
 </script>
 
 {#if definedHoliday}

@@ -23,10 +23,12 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@joeattardi/emoji-button": "4.6.4",
+    "@stomp/stompjs": "^7.0.0",
     "firebase": "^10.4.0",
     "fullcalendar": "^6.1.9",
     "redaxios": "^0.5.1",
     "sveltestrap": "^5.11.2",
+    "websocket": "^1.0.34",
     "websocket-ts": "^2.1.5"
   }
 }

@@ -5,7 +5,7 @@
   const navigate = useNavigate();
 
   type Holiday = {
-    id: number;
+    id: string;
     title: string;
     startDate: string;
     endDate: string;
@@ -16,7 +16,7 @@
 
   let holidays: Holiday[] = [
     {
-      id: 1,
+      id: "ybWwUe2QFpEmcwn4sUQR",
       title: "Weekend en amoureux",
       startDate: "2023-10-20",
       endDate: "2023-10-22",
@@ -26,7 +26,7 @@
       isPublish: true,
     },
     {
-      id: 2,
+      id: "6Zt0YQI7iK3UinW0a3UN",
       title: "Séjour à la montagne",
       startDate: "2023-11-26",
       endDate: "2023-12-05",

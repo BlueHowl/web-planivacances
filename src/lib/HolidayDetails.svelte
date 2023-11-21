@@ -51,7 +51,9 @@
   }
 
   function onGoToTchat() {
-    navigate("/tchat", { state: { title: $location.state.title } });
+    navigate("/tchat", {
+      state: { id: $location.state.id, title: $location.state.title },
+    });
   }
 </script>
 
