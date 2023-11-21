@@ -28,7 +28,7 @@
   }
 </script>
 
-<Form on:submit={(e) => e.preventDefault()}>
+<Form>
   <FormGroup>
 
     <div id="message-container">

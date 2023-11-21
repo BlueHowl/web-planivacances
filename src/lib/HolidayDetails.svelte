@@ -1,36 +1,24 @@
 <script lang="ts">
   import { useLocation, useNavigate } from "svelte-navigator";
-  import { Button, Input, FormGroup } from "sveltestrap";
-  import { formatDateForDisplay } from "../utils/DateFormatter";
+  import { Button, FormGroup } from "sveltestrap";
+  import { format } from 'date-fns';
   import Calendar from "../assets/calendrier.png";
   import Weather from "../assets/meteo.png";
   import Tchat from "../assets/tchat.png";
-
-  let definedHoliday = false;
-  let title: string;
-  let startDate: string;
-  let endDate: string;
-  let place: string;
-  let description: string;
-  let isPublish: boolean;
+  import { groupListStore } from "../stores/group";
+  import type { GroupMap } from "../model/GroupMap";
+  import { currentGroupId as currentGroupId } from "../stores/currentGroup";
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (location && $location.state) {
-    definedHoliday = true;
-    const state = $location.state;
-    title = state.title;
-    startDate = formatDateForDisplay(state.startDate);
-    endDate = formatDateForDisplay(state.endDate);
-    place = state.place;
-    description = state.description;
-    isPublish = state.isPublish;
-  }
+  let groups: GroupMap = $groupListStore || {};
+  
+  let group = groups[$currentGroupId];
+  let address = `${group.place.street}, ${group.place.number} ${group.place.city} ${group.place.country}`;
+  let formattedStartDate = format(new Date(group.startDate), "dd/MM/yyyy");
+  let formattedEndDate = format(new Date(group.endDate), "dd/MM/yyyy");
 
-  function handleSwitchChange(event: any) {
-    isPublish = event.target.checked;
-  }
 
   function addMemberToHoliday() {
     const mail = window.prompt(
@@ -58,25 +46,25 @@
 </script>
 
 <section id="holidayDetails">
-  {#if definedHoliday}
+  {#if group.gid != null}
     <i
       id="addMemberIcone"
       class="fa-solid fa-user-plus fa-2xl"
       on:click={addMemberToHoliday}
       on:keypress={addMemberToHoliday}
     />
-    <h1>{title}</h1>
-    <h2>Du {startDate} au {endDate}</h2>
-    <h3>{place}</h3>
-    <p>{description}</p>
-    <FormGroup style="display:flex;justify-content:center;">
+    <h1>{group.groupName}</h1>
+    <h2>Du {formattedStartDate} au {formattedEndDate}</h2>
+    <h3>{address}</h3>
+    <p>{group.description}</p>
+    <!--<FormGroup style="display:flex;justify-content:center;">
       <Input
         type="switch"
         label="Publier ce voyage"
         bind:checked={isPublish}
         on:change={handleSwitchChange}
       />
-    </FormGroup>
+    </FormGroup>-->
     <!--En faire un nouveau composant ? (ActionsForHoliday) -->
     <div id="moreActionsForHoliday">
       <div

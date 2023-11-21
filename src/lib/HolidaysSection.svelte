@@ -1,60 +1,46 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
   import CustomCard from "./CustomCard.svelte";
+  import { groupListStore } from "../stores/group";
+  import { loadUserGroups } from "../service/GroupService";
+  import type { Group } from "../model/Group";
+  import { onMount } from "svelte";
+  import { currentGroupId } from "../stores/currentGroup";
 
   const navigate = useNavigate();
 
-  type Holiday = {
-    id: string;
-    title: string;
-    startDate: string;
-    endDate: string;
-    place: string;
-    description: string;
-    isPublish: boolean;
-  };
+  let groups: Group[] = [];
 
-  let holidays: Holiday[] = [
-    {
-      id: "ybWwUe2QFpEmcwn4sUQR",
-      title: "Weekend en amoureux",
-      startDate: "2023-10-20",
-      endDate: "2023-10-22",
-      place: "Rue des Pottiers 3 2344 LoveCity",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus quis leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus quis leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus quis leo.",
-      isPublish: true,
-    },
-    {
-      id: "6Zt0YQI7iK3UinW0a3UN",
-      title: "Séjour à la montagne",
-      startDate: "2023-11-26",
-      endDate: "2023-12-05",
-      place: "Rue de Harlez 25 4000 Liège",
-      description:
-        "Maecenas ullamcorper tempus nisi, eget pulvinar nulla accumsan condimentum.Maecenas ullamcorper tempus nisi, eget pulvinar nulla accumsan condimentum.",
-      isPublish: false,
-    },
-  ];
+  onMount(() => {
+    const unsubscribe = groupListStore.subscribe(value => {
+      groups = Object.values(value ?? {}) || [];
+    });
+
+    return unsubscribe;
+  });
+
+  loadUserGroups(); //todo only once ??
+
 
   function handleNavToDetails(event: CustomEvent) {
-    navigate("/holidayDetails", {
-      state: holidays.find((elem) => elem.id === event.detail.id),
-    });
+    navigate("/holidayDetails");
+    currentGroupId.set(event.detail.id);
   }
 </script>
 
 <section id="holidays-container">
-  {#each holidays as holiday}
-    <CustomCard
-      id={holiday.id}
-      title={holiday.title}
-      startDate={holiday.startDate}
-      endDate={holiday.endDate}
-      description={holiday.description}
-      on:navToDetails={handleNavToDetails}
-    />
-  {/each}
+  {#if groups.length != 0}
+    {#each groups as group}
+      <CustomCard
+        id={group.gid}
+        title={group.groupName}
+        startDate={group.startDate}
+        endDate={group.endDate}
+        description={group.description}
+        on:navToDetails={handleNavToDetails}
+      />
+    {/each}
+  {/if}
 </section>
 
 <style>

@@ -2,6 +2,7 @@
   import { Button } from "sveltestrap";
   import { useLocation, useNavigate } from "svelte-navigator";
   import FrenchFullCalendar from "./FrenchFullCalendar.svelte";
+    import { exportCalendar } from "../service/CalendarService";
 
   let navigate = useNavigate();
   let definedHoliday: boolean = false;
@@ -84,7 +85,7 @@
     <Button color="primary" outline on:click={goToAddActivity}
       >Ajouter une activité</Button
     >
-    <Button color="primary" outline>Exporter le calendrier</Button>
+    <Button color="primary" outline on:click={exportCalendar}>Exporter le calendrier</Button>
   </div>
   <FrenchFullCalendar
     bind:this={calendarComponent}

@@ -13,6 +13,7 @@
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "@tsconfig/svelte": "^5.0.0",
     "@types/firebase": "^3.2.1",
+    "@types/googlemaps": "^3.43.3",
     "svelte": "^3.59.2",
     "svelte-check": "^3.4.6",
     "svelte-navigator": "^3.2.2",
@@ -23,12 +24,12 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@joeattardi/emoji-button": "4.6.4",
+    "date-fns": "^2.30.0",
     "@stomp/stompjs": "^7.0.0",
     "firebase": "^10.4.0",
     "fullcalendar": "^6.1.9",
     "redaxios": "^0.5.1",
     "sveltestrap": "^5.11.2",
-    "websocket": "^1.0.34",
     "websocket-ts": "^2.1.5"
   }
 }

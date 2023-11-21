@@ -9,7 +9,7 @@ import {
     signInWithCustomToken,
     signOut
 } from "firebase/auth";
-import { userStore } from "../stores/User";
+import { userStore } from "../stores/user";
 import type { User } from '../model/User';
 import { firebaseConfig } from "../utils/config";
 import { setCustomToken, getCustomToken, clearCustomToken } from "../AuthToken";
@@ -109,7 +109,7 @@ export async function register(name: string, surname: string, email: string, pas
 
         console.log(result ? "Création du compte avec succès" : "Erreur lors de la création du compte")
 
-        return result
+        return result;
     } catch (error) {
         console.error(error);
 
@@ -155,7 +155,7 @@ async function setCurrentUser() {
                 console.error("Erreur lors de la récupération de l'email de l'utilisateur :", error);
             }
         }
-        userStore.set(user)
+        userStore.set(user);
     }
 }
 

@@ -14,7 +14,7 @@
 
   import { Link, useNavigate } from "svelte-navigator";
   import { useLocation } from "svelte-navigator";
-  import { userStore } from "../stores/User";
+  import { userStore } from "../stores/user";
   import { disconnect } from "../service/AuthService";
 
   const navigate = useNavigate();
