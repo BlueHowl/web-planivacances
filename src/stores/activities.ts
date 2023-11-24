@@ -1,4 +1,4 @@
 import { writable, type Writable } from "svelte/store";
-import type { Activity } from "../model/Activity";
+import type { ActivityMap } from "../model/ActivityMap";
 
-export const activityListStore: Writable<Array<Activity>> = writable([]);
+export let activityListStore: Writable<ActivityMap> = writable({});

@@ -24,7 +24,7 @@
   currentGidStore.subscribe(value => {
     group = groups[value];
 
-    if(group != null) {
+    if(group != null && group.place != null) {
       address = `${group.place.street}, ${group.place.number} ${group.place.city} ${group.place.country}`;
       formattedStartDate = format(new Date(group.startDate), "dd/MM/yyyy");
       formattedEndDate = format(new Date(group.endDate), "dd/MM/yyyy");

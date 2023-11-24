@@ -2,17 +2,16 @@
   import { createEventDispatcher, onMount } from "svelte";
   import { Calendar } from "@fullcalendar/core";
   import dayGridPlugin from "@fullcalendar/daygrid";
-  import { Button } from "sveltestrap";
-  import { exportCalendar } from "../service/CalendarService";
 
   let calendar: Calendar;
   let dispatch = createEventDispatcher();
-
+  
   export function addEventToCalendar(
+    aid: string,
     title: string,
     startDate: string,
     endDate: string,
-    place: string,
+    //place: string,
     description: string
   ) {
     if (calendar) {
@@ -20,10 +19,17 @@
         title: title,
         start: startDate,
         end: endDate,
-        place: place,
         description: description,
+        extendedProps: {
+          aid: aid,
+          //place: place
+        }
       });
     }
+  }
+
+  export function removeAllEvents() {
+    calendar.removeAllEvents();
   }
 
   onMount(() => {
@@ -36,12 +42,9 @@
       },
       eventClick: function (info) {
         const activity = info.event;
+
         dispatch("navToDetails", {
-          title: activity.title,
-          startDate: activity.start ? activity.start.toLocaleString() : "",
-          endDate: activity.end ? activity.end.toLocaleString() : "",
-          place: activity.extendedProps.place,
-          description: activity.extendedProps.description,
+          aid: activity.extendedProps.aid
         });
       },
     });
@@ -51,5 +54,3 @@
 </script>
 
 <div id="calendar" />
-
-<Button on:click={exportCalendar}>Exporter</Button>
