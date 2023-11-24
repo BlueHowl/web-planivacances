@@ -1,80 +1,90 @@
 <script lang="ts">
-  import { useLocation, useNavigate } from "svelte-navigator";
-  import { Button, Input, FormGroup } from "sveltestrap";
-  import { formatDateForDisplay } from "../utils/DateFormatter";
+  import { useNavigate } from "svelte-navigator";
+  import { Button } from "sveltestrap";
+  import { format } from "date-fns";
   import Calendar from "../assets/calendrier.png";
   import Weather from "../assets/meteo.png";
   import Tchat from "../assets/tchat.png";
-
-  let definedHoliday = false;
-  let title: string;
-  let startDate: string;
-  let endDate: string;
-  let place: string;
-  let description: string;
-  let isPublish: boolean;
-
-  const location = useLocation();
+  import { groupListStore } from "../stores/groups";
+  import type { GroupMap } from "../model/GroupMap";
+  import { currentGidStore as currentGidStore } from "../stores/currentGroup";
+  import { sendGroupInvite } from "../service/GroupService";
+  import type { Group } from "../model/Group";
+  
   const navigate = useNavigate();
 
-  if (location && $location.state) {
-    definedHoliday = true;
-    const state = $location.state;
-    title = state.title;
-    startDate = formatDateForDisplay(state.startDate);
-    endDate = formatDateForDisplay(state.endDate);
-    place = state.place;
-    description = state.description;
-    isPublish = state.isPublish;
-  }
+  let groups: GroupMap = $groupListStore || {};
 
-  function handleSwitchChange(event: any) {
-    isPublish = event.target.checked;
-  }
+  let group: Group;
+
+  let address: string;
+  let formattedStartDate: string;
+  let formattedEndDate: string;
+
+  currentGidStore.subscribe(value => {
+    group = groups[value];
+
+    if(group != null && group.place != null) {
+      address = `${group.place.street}, ${group.place.number} ${group.place.city} ${group.place.country}`;
+      formattedStartDate = format(new Date(group.startDate), "dd/MM/yyyy");
+      formattedEndDate = format(new Date(group.endDate), "dd/MM/yyyy");
+    }
+  });
 
   function addMemberToHoliday() {
-    const mail = window.prompt(
+    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const mail: string | null = window.prompt(
       "Ajout d'un membre au voyage\nEntrez ci-dessous l’email de l’utilisateur à ajouter..."
     );
+
+    if (mail !== null) {
+      if (emailRegex.test(mail)) {
+        sendGroupInvite(group.gid, mail);
+      } else {
+        alert("Adresse e-mail invalide. Veuillez entrer une adresse e-mail valide.");
+      }
+    }
+    
   }
 
   function handleUpdateHoliday() {
-    navigate("/updateHoliday", { state: $location.state });
+    navigate("/updateHoliday");
   }
 
   function onGoToPlanning() {
-    navigate("/planning", { state: { id: $location.state.id } });
+    navigate("/planning");
   }
 
   function onGoToWeather() {
-    navigate("/weather", { state: { place: $location.state.place } });
+    navigate("/weather");
   }
 
   function onGoToTchat() {
-    navigate("/tchat", { state: { title: $location.state.title } });
+    navigate("/tchat");
   }
 </script>
 
 <section id="holidayDetails">
-  {#if definedHoliday}
+  {#if group != null}
     <i
       id="addMemberIcone"
       class="fa-solid fa-user-plus fa-2xl"
       on:click={addMemberToHoliday}
       on:keypress={addMemberToHoliday}
     />
-    <h1>{title}</h1>
-    <h2>Du {startDate} au {endDate}</h2>
-    <h3>{place}</h3>
-    <p>{description}</p>
-    <FormGroup style="display:flex;justify-content:center;">
+    <h1>{group.groupName}</h1>
+    <h2>Du {formattedStartDate} au {formattedEndDate}</h2>
+    <h3>{address}</h3>
+    <p>{group.description}</p>
+    <!--<FormGroup style="display:flex;justify-content:center;">
       <Input
         type="switch"
         label="Publier ce voyage"
         bind:checked={isPublish}
         on:change={handleSwitchChange}
       />
-    </FormGroup>
+    </FormGroup>-->
     <!--En faire un nouveau composant ? (ActionsForHoliday) -->
     <div id="moreActionsForHoliday">
       <div

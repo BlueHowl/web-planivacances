@@ -12,22 +12,29 @@
     DropdownItem,
   } from "sveltestrap";
 
-  import { Link } from "svelte-navigator";
+  import { Link, useNavigate } from "svelte-navigator";
   import { useLocation } from "svelte-navigator";
+  import { userStore } from "../stores/user";
+  import { disconnect } from "../service/AuthService";
+
+  const navigate = useNavigate();
 
   const location = useLocation();
   let isOpen = false;
-  let isConnected = true;
-  let profileConnected = "Maxime Cao";
 
-  function handleUpdate(event) {
+  function handleUpdate(event: CustomEvent) {
     isOpen = event.detail.isOpen;
+  }
+
+  function disconnectUser() {
+    disconnect();
+    navigate("/");
   }
 </script>
 
 <header class="planiVacancesHeader">
   <Navbar color="light" light expand="md">
-    <NavbarBrand href="/">PlaniVacances</NavbarBrand>
+    <Link to="/"><NavbarBrand>PlaniVacances</NavbarBrand></Link>
     <NavbarToggler on:click={() => (isOpen = !isOpen)} />
     <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
       <Nav class="ms-auto" navbar>
@@ -49,9 +56,9 @@
             to="/contact">Contact</Link
           >
         </NavItem>
-        {#if isConnected}
+        {#if $userStore}
           <Dropdown nav inNavbar>
-            <DropdownToggle nav caret>{profileConnected}</DropdownToggle>
+            <DropdownToggle nav caret>{$userStore.displayName}</DropdownToggle>
             <DropdownMenu end>
               <Link
                 id="profile"
@@ -74,7 +81,7 @@
                   : "dropdown-item"}
                 to="/notifications">Mes notifications</Link
               >
-              <DropdownItem>Déconnexion</DropdownItem>
+              <DropdownItem on:click={disconnectUser}>Déconnexion</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         {:else}

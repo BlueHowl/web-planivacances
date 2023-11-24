@@ -1,41 +1,54 @@
 <script lang="ts">
   import { Button } from "sveltestrap";
-  import { useLocation, useNavigate } from "svelte-navigator";
+  import { useNavigate } from "svelte-navigator";
+  import type { ActivityMap } from "../model/ActivityMap";
+  import { activityListStore } from "../stores/activities";
+  import type { Activity } from "../model/Activity";
+  import { currentAidStore } from "../stores/currentActivity";
+  import { format } from "date-fns";
+    import { deleteActivity } from "../service/ActivityService";
 
-  const location = useLocation();
   const navigate = useNavigate();
 
-  let definedActivity = false;
-  let title: string;
-  let startDate: string;
-  let endDate: string;
-  let place: string;
-  let description: string;
+  let activities: ActivityMap = $activityListStore || {};
 
-  if (location && $location.state) {
-    definedActivity = true;
-    const state = $location.state;
-    title = state.title;
-    startDate = state.startDate;
-    endDate = state.endDate;
-    place = state.place;
-    description = state.description;
-  }
+  let activity: Activity;
+
+  let address: string;
+  let formattedStartDate: string;
+  let formattedEndDate: string;
+
+  currentAidStore.subscribe(value => {
+    activity = activities[value];
+
+    if(activity != null && activity.place != null) {
+      address = `${activity.place.street}, ${activity.place.number} ${activity.place.city} ${activity.place.country}`;
+      formattedStartDate = format(new Date(activity.startDate), "dd/MM/yyyy");
+      formattedEndDate = format(new Date(new Date(activity.startDate ?? "").getTime() + activity.duration * 1000), "dd/MM/yyyy");
+    }
+  });
 
   function onUpdateActivity() {
-    navigate("/updateActivity", { state: $location.state });
+    navigate("/updateActivity");
   }
+
+  function onDeleteActivity() {
+    if(deleteActivity() != null) {
+      navigate("/planning");
+    }
+  }
+
 </script>
 
 <section id="activityDetails">
-  {#if definedActivity}
-    <h1>{title}</h1>
-    <h2>Du {startDate} au {endDate}</h2>
-    <h3>{place}</h3>
-    <p>{description}</p>
+  {#if activity != null}
+    <h1>{activity.title}</h1>
+    <h2>Du {formattedStartDate} au {formattedEndDate}</h2>
+    <h3>{address}</h3>
+    <p>{activity.description}</p>
     <div>
       <Button color="primary" on:click={onUpdateActivity}>Modifier</Button>
-      <Button color="danger">Supprimer</Button>
+      <Button color="danger" on:click={onDeleteActivity}>Supprimer</Button>
     </div>
   {:else}
     <h1>Activité non trouvée</h1>

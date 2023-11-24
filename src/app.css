@@ -45,7 +45,7 @@ h1 {
   text-align: center;
 
   width: 100%;
-  height: 100vh;
+  min-height: inherit;
 
   flex-direction: column;
   display: flex;

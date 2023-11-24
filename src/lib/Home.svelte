@@ -1,7 +1,6 @@
 <script lang="ts">
   import RegistredMembersSection from "./RegistredMembersSection.svelte";
   import MembersInHolidayByDateSection from "./MembersInHolidayByDateSection.svelte";
-  import HolidaysByCountrySection from "./HolidaysByCountrySection.svelte";
 </script>
 
 <p id="catchPhrase" class="text-primary">
@@ -11,8 +10,6 @@
 <RegistredMembersSection />
 
 <MembersInHolidayByDateSection />
-
-<HolidaysByCountrySection />
 
 <style>
   #catchPhrase {

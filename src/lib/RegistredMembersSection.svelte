@@ -1,15 +1,38 @@
 <script lang="ts">
+  import { onDestroy, onMount } from "svelte";
   import { Link } from "svelte-navigator";
-  let counterMembers: number = 10231;
-  let isConnected: Boolean = false;
+  import { userStore } from "../stores/User";
+  let counterMembers: number = 0;
+  let eventSource: EventSource;
+
+  onMount(() => {
+    eventSource = new EventSource(
+      "http://localhost:8080/api/users/number/flux"//"https://studapps.cg.helmo.be:5011/REST_CAO_BART/api/users/number/flux"
+    );
+
+    eventSource.onmessage = (event) => {
+      counterMembers = event.data;
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close();
+    };
+  });
+
+  onDestroy(() => {
+    if (eventSource) {
+      eventSource.close();
+    }
+  });
 </script>
 
 <section id="numberRegistredMembers" class="bg-primary">
   <p>
-    Nous comptons déjà <span id="counterMembers">{counterMembers}</span> membres
+    Nous comptons déjà <span id="counterMembers">{counterMembers}</span>
+    {counterMembers > 1 ? "membres" : "membre"}
     !
   </p>
-  {#if !isConnected}
+  {#if !$userStore}
     <Link class="text-white text-decoration-underline" to="/register"
       >Cliquez ici pour nous rejoindre</Link
     >
