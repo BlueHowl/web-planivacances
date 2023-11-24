@@ -11,7 +11,6 @@
     title: string,
     startDate: string,
     endDate: string,
-    //place: string,
     description: string
   ) {
     if (calendar) {
@@ -21,8 +20,7 @@
         end: endDate,
         description: description,
         extendedProps: {
-          aid: aid,
-          //place: place
+          aid: aid
         }
       });
     }

@@ -12,15 +12,21 @@ import {
 import { userStore } from "../stores/user";
 import type { User } from '../model/User';
 import { firebaseConfig } from "../utils/config";
-import { setCustomToken, getCustomToken, clearCustomToken } from "../AuthToken";
+//import { setCustomToken, getCustomToken, clearCustomToken, customTokenStore } from "../stores/authToken";
+import { userPerCountryStore } from "../stores/statByCountry";
+import { groupListStore } from "../stores/groups";
+import { currentGidStore } from "../stores/currentGroup";
+import { activityListStore } from "../stores/activities";
+import { currentAidStore } from "../stores/currentActivity";
+import { groupInviteStore } from "../stores/groupInvite";
+import { customTokenStore } from "../stores/AuthToken";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 auth.useDeviceLanguage();
 
-
-getCustomToken().then((customToken: string|null) => {
+customTokenStore.subscribe((customToken: string|null) => {
     if(customToken) {
         authenticate(customToken);
     }
@@ -49,8 +55,9 @@ export async function authenticate(customToken: string): Promise<boolean> {
         const token = await credentials.user.getIdToken(false);
 
         console.log("Authentification réussie");
-        setCustomToken(customToken);
-        createAuthInstance(token); 
+        //setCustomToken(customToken);
+        customTokenStore.set(customToken);
+        createAuthInstance(token);
         await setCurrentUser();
         return true;
     } else {
@@ -151,13 +158,19 @@ async function setCurrentUser() {
 }
 
 
-function clearCurrentUser() {
+function clearStores() {
+    customTokenStore.set("");
     userStore.set(null);
+    userPerCountryStore.set(null);
+    groupListStore.set({});
+    activityListStore.set({});
+    currentGidStore.set("");
+    currentAidStore.set("");
+    groupInviteStore.set([]);
 }
 
 
 export function disconnect() {
     signOut(auth);
-    clearCustomToken();
-    clearCurrentUser();
+    clearStores();
 }
