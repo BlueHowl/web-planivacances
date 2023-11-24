@@ -57,7 +57,6 @@
       if (messages.length == 100) {
         messages.shift();
       }
-
       messages = [...messages, message];
     }
 
