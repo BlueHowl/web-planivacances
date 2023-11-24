@@ -1,5 +1,7 @@
 import { writable, type Writable } from 'svelte/store';
 import type { GroupMap } from '../model/GroupMap';
-import { createSessionStorage, persist } from '@macfja/svelte-persistent-store';
+import { createEncryptionStorage, createSessionStorage, GCMEncryption, persist } from '@macfja/svelte-persistent-store';
+import { STORE_ENCRYPTION_KEY } from '../utils/config';
 
-export let groupListStore: Writable<GroupMap> = persist(writable({}), createSessionStorage(), "groups")
+const storage = createEncryptionStorage(createSessionStorage(), new GCMEncryption(STORE_ENCRYPTION_KEY))
+export let groupListStore: Writable<GroupMap> = persist(writable({}), storage, "groups") as Writable<GroupMap>

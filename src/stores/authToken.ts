@@ -1,4 +1,6 @@
-import { type Writable } from "svelte/store";
-import { createLocalStorage, persist, writable } from "@macfja/svelte-persistent-store"
+import { writable, type Writable } from "svelte/store";
+import { GCMEncryption, createEncryptionStorage, createLocalStorage, persist } from "@macfja/svelte-persistent-store"
+import { STORE_ENCRYPTION_KEY } from "../utils/config";
 
-export let customTokenStore: Writable<string> = persist(writable(""), createLocalStorage(), "customToken");
+const storage = createEncryptionStorage(createLocalStorage(), new GCMEncryption(STORE_ENCRYPTION_KEY))
+export let customTokenStore: Writable<string> = persist(writable(""), storage, "customToken") as Writable<string>;

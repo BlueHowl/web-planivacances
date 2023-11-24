@@ -1,4 +1,6 @@
 import { type Writable } from "svelte/store";
-import { createSessionStorage, persist, writable } from "@macfja/svelte-persistent-store"
+import { GCMEncryption, createEncryptionStorage, createSessionStorage, persist, writable } from "@macfja/svelte-persistent-store"
+import { STORE_ENCRYPTION_KEY } from "../utils/config";
 
-export let currentAidStore: Writable<string> = persist(writable(""), createSessionStorage(), "currentAid");
+const storage = createEncryptionStorage(createSessionStorage(), new GCMEncryption(STORE_ENCRYPTION_KEY))
+export let currentAidStore: Writable<string> = persist(writable(""), storage, "currentAid") as Writable<string>;
