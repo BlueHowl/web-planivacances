@@ -2,9 +2,6 @@
   import { onMount } from "svelte";
   import Forecast from "./Forecast.svelte";
   import { getWeatherData } from "../service/WeatherService";
-  import { groupListStore } from "../stores/group";
-  import { currentGroupId } from "../stores/currentGroup";
-  import type { GroupMap } from "../model/GroupMap";
     import type { Place } from "../model/Place";
 
   let forecasts: any = [];

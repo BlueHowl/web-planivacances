@@ -2,7 +2,7 @@ import type { Group } from "../model/Group";
 import type { GroupInvite } from "../model/GroupInvite";
 import type { GroupMap } from "../model/GroupMap";
 import type { User } from "../model/User";
-import { groupListStore } from "../stores/group";
+import { groupListStore } from "../stores/groups";
 import { groupInviteStore } from "../stores/groupInvite";
 import { userStore } from "../stores/user";
 import { instance } from "./ApiClient";
@@ -62,7 +62,6 @@ export async function loadUserGroupInvites() {
             groupInviteStore.set(response.data as unknown as Array<GroupInvite>);
             
             console.log("Invitations aux groupes chargées");
-            
         }
     } catch (error) {
         console.error(error);

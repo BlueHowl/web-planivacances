@@ -1,3 +1,3 @@
 import { writable, type Writable } from "svelte/store";
 
-export let currentGroupId: Writable<string> = writable("null");
+export let currentGidStore: Writable<string> = writable("null");

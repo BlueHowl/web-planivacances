@@ -1,13 +1,13 @@
 <script lang="ts">
   import ForecastsSection from "./ForecastsSection.svelte";
   import type { GroupMap } from "../model/GroupMap";
-  import { groupListStore } from "../stores/group";
-  import { currentGroupId } from "../stores/currentGroup";
+  import { groupListStore } from "../stores/groups";
+  import { currentGidStore } from "../stores/currentGroup";
 
 
   let groups: GroupMap = $groupListStore || {};
   
-  let group = groups[$currentGroupId];
+  let group = groups[$currentGidStore];
 
 </script>
 

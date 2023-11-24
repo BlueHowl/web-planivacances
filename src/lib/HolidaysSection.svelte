@@ -1,11 +1,11 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
   import CustomCard from "./CustomCard.svelte";
-  import { groupListStore } from "../stores/group";
+  import { groupListStore } from "../stores/groups";
   import { loadUserGroups } from "../service/GroupService";
   import type { Group } from "../model/Group";
   import { onMount } from "svelte";
-  import { currentGroupId } from "../stores/currentGroup";
+  import { currentGidStore } from "../stores/currentGroup";
 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@
   loadUserGroups();
 
   function handleNavToDetails(event: CustomEvent) {
-    currentGroupId.set(event.detail.id);
+    currentGidStore.set(event.detail.id);
     navigate("/holidayDetails");
   }
 </script>

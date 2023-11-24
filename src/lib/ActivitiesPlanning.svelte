@@ -2,33 +2,43 @@
   import { Button } from "sveltestrap";
   import { useLocation, useNavigate } from "svelte-navigator";
   import FrenchFullCalendar from "./FrenchFullCalendar.svelte";
-    import { exportCalendar } from "../service/CalendarService";
+  import { exportCalendar } from "../service/CalendarService";
+    import type { Activity } from "../model/Activity";
+    import { loadActivities } from "../service/ActivityService";
+    import { activityListStore } from "../stores/activities";
+    import { onMount } from "svelte";
 
   let navigate = useNavigate();
-  let definedHoliday: boolean = false;
-  let idHoliday: number;
+  //let definedHoliday: boolean = false;
+  //let idHoliday: number;
   const location = useLocation();
 
-  let activities: {
+  /*let activities: {
     title: string;
     startDate: string;
     endDate: string;
     place: string;
     description: string;
-  }[] = [];
+  }[] = [];*/
+
+  let activities: Array<Activity>;
 
   let calendarComponent: FrenchFullCalendar;
 
   const addEventsToCalendar = () => {
-    activities.forEach((activity) =>
-      calendarComponent.addEventToCalendar(
-        activity.title,
-        activity.startDate,
-        activity.endDate,
-        activity.place,
-        activity.description
-      )
-    );
+    activities.forEach((activity) => {
+      if(activity.place != null) {
+        const address = `${activity.place.street}, ${activity.place.number} ${activity.place.city} ${activity.place.country}`;
+        const endDate = new Date(new Date(activity.startDate ?? "").getTime() + activity.duration * 1000);
+        calendarComponent.addEventToCalendar(
+          activity.title,
+          activity.startDate ?? "",
+          endDate.toDateString(),
+          address,
+          activity.description
+        );
+      }
+    });
   };
 
   function onNavToActivityDetails(event: CustomEvent) {
@@ -48,7 +58,16 @@
     navigate("/newActivity");
   }
 
-  $: if (location && $location.state) {
+  onMount(() => {
+    activityListStore.subscribe((value) => {
+      activities = value;
+      addEventsToCalendar();
+    });
+
+    loadActivities();
+  });
+
+  /*$: if (location && $location.state) {
     definedHoliday = true;
     const state = $location.state;
     idHoliday = state.id;
@@ -75,7 +94,7 @@
     if (calendarComponent) {
       addEventsToCalendar();
     }
-  }
+  }*/
 </script>
 
 <h1>Planning des activités</h1>

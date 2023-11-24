@@ -1,7 +1,7 @@
 import { instance } from "./ApiClient";
 import { downloadICSFile } from "../utils/CalendarDownloader";
-import { currentGroupId } from "../stores/currentGroup";
-import { groupListStore } from "../stores/group";
+import { currentGidStore } from "../stores/currentGroup";
+import { groupListStore } from "../stores/groups";
 import type { GroupMap } from "../model/GroupMap";
 
 let gid: string;
@@ -9,7 +9,7 @@ let groups: GroupMap|null;
 
 
 // Subscribe to changes in the currentGroupId store
-currentGroupId.subscribe(value => {
+currentGidStore.subscribe(value => {
   gid = value;
 });
 

@@ -5,7 +5,7 @@
   import LocationPicker from "./LocationPicker.svelte";
   import { format } from "date-fns";
   import { useNavigate } from "svelte-navigator";
-  import { currentGroupId } from "../stores/currentGroup";
+  import { currentGidStore } from "../stores/currentGroup";
 
   const navigate = useNavigate();
 
@@ -13,8 +13,8 @@
     gid: "",
     groupName: "",
     description: "",
-    startDate: "",
-    endDate: "",
+    startDate: null,
+    endDate: null,
     place: null,
     owner: "",
   };
@@ -26,23 +26,26 @@
   function onSubmit(e: any) {
     e.preventDefault();
 
-    group.startDate = format(
-      new Date(group.startDate),
-      "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    );
-    group.endDate = format(
-      new Date(group.endDate),
-      "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    );
+    if(group.startDate != null && group.endDate != null) {
+      group.startDate = format(
+        new Date(group.startDate),
+        "yyyy-MM-dd'T'HH:mm:ss.SSS"
+      );
+      group.endDate = format(
+        new Date(group.endDate),
+        "yyyy-MM-dd'T'HH:mm:ss.SSS"
+      );
 
-    createGroup(group).then((gid: string | null) => {
-      if (gid != null) {
-        currentGroupId.set(gid);
-        navigate("/holidayDetails");
-      } else {
-        console.error("Erreur lors de la création du groupe");
-      }
-    });
+      createGroup(group).then((gid: string | null) => {
+        if (gid != null) {
+          currentGidStore.set(gid);
+          
+          navigate("/holidays");
+        } else {
+          console.error("Erreur lors de la création du groupe");
+        }
+      });
+    }
   }
 </script>
 

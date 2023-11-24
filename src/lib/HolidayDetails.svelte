@@ -1,24 +1,35 @@
 <script lang="ts">
-  import { useLocation, useNavigate } from "svelte-navigator";
-  import { Button, FormGroup } from "sveltestrap";
+  import { useNavigate } from "svelte-navigator";
+  import { Button } from "sveltestrap";
   import { format } from "date-fns";
   import Calendar from "../assets/calendrier.png";
   import Weather from "../assets/meteo.png";
   import Tchat from "../assets/tchat.png";
-  import { groupListStore } from "../stores/group";
+  import { groupListStore } from "../stores/groups";
   import type { GroupMap } from "../model/GroupMap";
-  import { currentGroupId as currentGroupId } from "../stores/currentGroup";
-    import { sendGroupInvite } from "../service/GroupService";
-
-  const location = useLocation();
+  import { currentGidStore as currentGidStore } from "../stores/currentGroup";
+  import { sendGroupInvite } from "../service/GroupService";
+  import type { Group } from "../model/Group";
+  
   const navigate = useNavigate();
 
   let groups: GroupMap = $groupListStore || {};
 
-  let group = groups[$currentGroupId];
-  let address = `${group.place.street}, ${group.place.number} ${group.place.city} ${group.place.country}`;
-  let formattedStartDate = format(new Date(group.startDate), "dd/MM/yyyy");
-  let formattedEndDate = format(new Date(group.endDate), "dd/MM/yyyy");
+  let group: Group;
+
+  let address: string;
+  let formattedStartDate: string;
+  let formattedEndDate: string;
+
+  currentGidStore.subscribe(value => {
+    group = groups[value];
+
+    if(group != null) {
+      address = `${group.place.street}, ${group.place.number} ${group.place.city} ${group.place.country}`;
+      formattedStartDate = format(new Date(group.startDate), "dd/MM/yyyy");
+      formattedEndDate = format(new Date(group.endDate), "dd/MM/yyyy");
+    }
+  });
 
   function addMemberToHoliday() {
     const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -42,7 +53,7 @@
   }
 
   function onGoToPlanning() {
-    navigate("/planning", { state: { id: $location.state.id } });
+    navigate("/planning");
   }
 
   function onGoToWeather() {
@@ -55,7 +66,7 @@
 </script>
 
 <section id="holidayDetails">
-  {#if group.gid != null}
+  {#if group != null}
     <i
       id="addMemberIcone"
       class="fa-solid fa-user-plus fa-2xl"

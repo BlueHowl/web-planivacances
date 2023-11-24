@@ -6,8 +6,8 @@
   import { formatTimestampForDisplay } from "../utils/DateFormatter";
   import { userStore } from "../stores/User";
   import { getIdToken } from "../service/AuthService";
-  import { groupListStore } from "../stores/group";
-  import { currentGroupId as currentGroupId } from "../stores/currentGroup";
+  import { groupListStore } from "../stores/groups";
+  import { currentGidStore as currentGidStore } from "../stores/currentGroup";
   import type { GroupMap } from "../model/GroupMap";
 
   let definedHoliday = false;
@@ -20,7 +20,7 @@
   let tchatWS: CompatClient | null;
 
   let groups: GroupMap = $groupListStore || {};
-  let group = groups[$currentGroupId];
+  let group = groups[$currentGidStore];
 
   function sendMessage(event: CustomEvent) {
     if (tchatWS != null && headers != undefined) {
@@ -54,14 +54,19 @@
     };
 
     function addMessage(message: any) {
+      if (messages.length == 100) {
+        messages.shift();
+      }
+
       messages = [...messages, message];
     }
+
 
     onMount(async () => {
       const token = await getIdToken();
       if (token != null) {
         tchatWS = Stomp.client(
-          "ws://localhost:8080/websocket-groupMessages"//"wss://studapps.cg.helmo.be:5011/REST_CAO_BART/websocket-groupMessages"
+          "ws://localhost:8080/websocket-groupMessages" //"wss://studapps.cg.helmo.be:5011/REST_CAO_BART/websocket-groupMessages"
         );
 
         headers = {
