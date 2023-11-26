@@ -46,19 +46,19 @@ export async function createActivity(activity: Activity): Promise<string|null> {
     return null;
 }
 
-export async function updateActivity(activity: Activity): Promise<string|null> {
+export async function updateActivity(activity: Activity): Promise<boolean|null> {
     try {
         const response = await instance.put<string>(`/activity/${gid}/${aid}`, activity);
 
         if(response.status == 200) {
-            return response.data;
+            return response.data as unknown as boolean;
         }
         
     } catch (error) {
         console.error(error);
     }
 
-    return null;
+    return false;
 }
 
 export async function deleteActivity(): Promise<string|null> {

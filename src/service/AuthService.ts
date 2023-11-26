@@ -12,14 +12,13 @@ import {
 import { userStore } from "../stores/user";
 import type { User } from '../model/User';
 import { firebaseConfig } from "../utils/config";
-//import { setCustomToken, getCustomToken, clearCustomToken, customTokenStore } from "../stores/authToken";
 import { userPerCountryStore } from "../stores/statByCountry";
 import { groupListStore } from "../stores/groups";
 import { currentGidStore } from "../stores/currentGroup";
 import { activityListStore } from "../stores/activities";
 import { currentAidStore } from "../stores/currentActivity";
 import { groupInviteStore } from "../stores/groupInvite";
-import { customTokenStore } from "../stores/AuthToken";
+import { customTokenStore } from "../stores/authToken";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);

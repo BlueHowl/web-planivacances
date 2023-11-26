@@ -32,7 +32,7 @@
         "yyyy-MM-dd'T'HH:mm:ss.SSS");
 
       activity.duration = Math.abs(differenceInSeconds(new Date(endDate), new Date(activity.startDate)));
-      console.log(activity.duration);
+      //console.log(activity.duration); TODO check 
       createActivity(activity).then((aid: string | null) => {
         if(aid != null) {
           navigate("/planning");
@@ -74,13 +74,6 @@
       />
     </FormGroup>
     <LocationPicker on:place={handleLocationPicker} />
-    <!--<FormGroup floating label="Lieu">
-      <Input type="select" name="activityPlace" id="activityPlace">
-        {#each addresses as address}
-          <option value={address.id}>{address.completeAddress}</option>
-        {/each}
-      </Input>
-    </FormGroup>-->
     <FormGroup floating label="Ecrivez une description ici...">
       <Input
         id="activityDescription"

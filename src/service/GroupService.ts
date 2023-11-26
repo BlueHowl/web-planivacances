@@ -28,6 +28,21 @@ export async function createGroup(group: Group): Promise<string|null> {
     return null;
 }
 
+export async function updateGroup(gid: string, group: Group): Promise<boolean|null> {
+    try {
+        const response = await instance.post<string>(`/group/${gid}`, group);
+
+        if(response.status == 200) {
+            return response.data as unknown as boolean;
+        }
+        
+    } catch (error) {
+        console.error(error);
+    }
+
+    return false;
+}
+
 export async function loadUserGroups() {
     const groups: GroupMap = {};
 
