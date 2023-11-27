@@ -18,8 +18,4 @@ const messaging = firebase.messaging();
 self.addEventListener('push', (event) => {
     const payload = event.data.json();
     console.log('Message received in background:', payload);
-  
-    const notificationTitle = 'Message Title';
-
-    //self.postMessage({ notificationTitle, payload });
 });

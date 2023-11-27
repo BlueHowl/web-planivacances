@@ -6,6 +6,7 @@ import { groupListStore } from "../stores/groups";
 import { groupInviteStore } from "../stores/groupInvite";
 import { userStore } from "../stores/user";
 import { instance } from "./ApiClient";
+import { sendFcmToken } from "./UserService";
 
 let user: User|null;
 
@@ -18,6 +19,9 @@ export async function createGroup(group: Group): Promise<string|null> {
         const response = await instance.post<string>(`/group`, group);
 
         if(response.status == 200) {
+
+            await sendFcmToken(response.data);
+
             return response.data;
         }
         
@@ -108,6 +112,8 @@ export async function acceptGroupInvite(gid: string) {
 
         if(response.status == 200 && response.data) {
             loadUserGroupInvites()
+
+            await sendFcmToken(gid);
 
             console.log("Invitation acceptée");
         }

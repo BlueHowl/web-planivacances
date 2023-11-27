@@ -26,9 +26,9 @@ export async function getUsersPerCountry(givenDate: string) {
     }
 }
 
-export async function sendFcmToken() {
+export async function sendFcmToken(gid:string|null) {
     try {
-        const response = await instance.post<boolean>(`/users/${registrationToken}`);
+        const response = await instance.post<boolean>(`/users/${registrationToken}/${gid}`);
 
         if(response.status == 200) {
             const result = response.data as unknown as boolean;

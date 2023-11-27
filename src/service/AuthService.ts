@@ -58,8 +58,8 @@ export async function authenticate(customToken: string): Promise<boolean> {
         customTokenStore.set(customToken);
         createAuthInstance(token);
         await setCurrentUser();
-        await sendFcmToken();
-        
+        await sendFcmToken(null);
+
         return true;
     } else {
         console.error("Erreur lors de l'authentification'");
