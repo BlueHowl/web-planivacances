@@ -1,8 +1,5 @@
 <script lang="ts">
   import { Router, Route } from "svelte-navigator";
-
-  let basepath = import.meta.env.BASE_URL;
-
   import Footer from "./lib/Footer.svelte";
   import Header from "./lib/Header.svelte";
   import Home from "./lib/Home.svelte";
@@ -20,6 +17,11 @@
   import Tchat from "./lib/Tchat.svelte";
   import Weather from "./lib/Weather.svelte";
   import NotificationPage from "./lib/NotificationPage.svelte";
+  import { requestPermissions } from "./service/NotificationService";
+
+  let basepath = import.meta.env.BASE_URL;
+
+  requestPermissions();
 </script>
 
 <Router {basepath}>

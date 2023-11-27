@@ -1,5 +1,4 @@
 import { instance, createAuthInstance} from "./ApiClient";
-import { initializeApp } from "firebase/app";
 import { 
     getAuth, 
     GoogleAuthProvider, 
@@ -19,8 +18,9 @@ import { activityListStore } from "../stores/activities";
 import { currentAidStore } from "../stores/currentActivity";
 import { groupInviteStore } from "../stores/groupInvite";
 import { customTokenStore } from "../stores/authToken";
+import { app } from "./FirebaseApp";
+import { sendFcmToken } from "./UserService";
 
-const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 auth.useDeviceLanguage();
@@ -58,6 +58,8 @@ export async function authenticate(customToken: string): Promise<boolean> {
         customTokenStore.set(customToken);
         createAuthInstance(token);
         await setCurrentUser();
+        await sendFcmToken();
+        
         return true;
     } else {
         console.error("Erreur lors de l'authentification'");
