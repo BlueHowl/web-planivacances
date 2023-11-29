@@ -1,4 +1,4 @@
-import { instance, createAuthInstance} from "./ApiClient";
+import { instance, setToken as setTokenToInstance} from "./ApiClient";
 import { 
     getAuth, 
     GoogleAuthProvider, 
@@ -25,14 +25,8 @@ const auth = getAuth(app);
 
 auth.useDeviceLanguage();
 
-customTokenStore.subscribe((customToken: string|null) => {
-    if(customToken) {
-        authenticate(customToken);
-    }
-});
-
 export async function verifyToken(token: string): Promise<boolean> {
-    createAuthInstance(token);
+    setTokenToInstance(token);
 
     try {
         const response = await instance.post<string>("/auth/token");
@@ -48,23 +42,23 @@ export async function verifyToken(token: string): Promise<boolean> {
     }
 }
 
-export async function authenticate(customToken: string): Promise<boolean> {
+export async function authenticate(customToken: string): Promise<string|null> {
     if (customToken != null) {
         const credentials = await signInWithCustomToken(auth, customToken)
         const token = await credentials.user.getIdToken(false);
 
         console.log("Authentification réussie");
-        //setCustomToken(customToken);
+
         customTokenStore.set(customToken);
-        createAuthInstance(token);
+        setTokenToInstance(token);
         await setCurrentUser();
         await sendFcmToken(null);
 
-        return true;
+        return token;
     } else {
         console.error("Erreur lors de l'authentification'");
 
-        return false;
+        return null;
     }
 }
 
@@ -87,7 +81,7 @@ export async function login(email: string, password: string): Promise<boolean> {
 
         isLoadingStore.set(false);
 
-        return result
+        return result != null;
 
     } catch (error) {
         console.error(error);
@@ -113,7 +107,7 @@ export async function register(name: string, surname: string, email: string, pas
 
         isLoadingStore.set(false);
 
-        return result;
+        return result != null;
     } catch (error) {
         console.error(error);
         isLoadingStore.set(false);
@@ -135,7 +129,8 @@ export const signInWithOtherProvider = async (provider: string) => {
         const token = await result.user.getIdToken(false);
 
         if(await verifyToken(token)) {
-            createAuthInstance(token);
+            setTokenToInstance(token);
+            
             await setCurrentUser();
             return true;
         }

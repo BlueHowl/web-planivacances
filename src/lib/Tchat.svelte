@@ -59,9 +59,8 @@
       }
       messages = [...messages, message];
 
-      var element = document.querySelector("footer");
-      element.scrollIntoView();
-
+      //scroll down when new message 
+      document.querySelector("footer")?.scrollIntoView();
     }
 
 
