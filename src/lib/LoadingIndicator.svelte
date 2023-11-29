@@ -12,9 +12,7 @@
 
 	isLoadingStore.subscribe(value => {
 		visible = value;
-		console.log("test" + value);
 		if(value) {
-			
 			p = 0;
 			setTimeout(next, 250);
 		}

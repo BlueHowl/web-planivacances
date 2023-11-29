@@ -35,7 +35,7 @@
         <p>{country}: {userCount} {userCount > 1 ? 'membres' : 'membre'}</p>
       {/each}
     {:else}
-      <p>No data available</p>
+      <p>Pas de données disponibles</p>
     {/if}
   </div>
 </section>

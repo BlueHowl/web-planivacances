@@ -7,10 +7,15 @@ import { registrationTokenStore } from "../stores/fcmToken";
 const messaging = getMessaging(app);
 
 export function loadFcmToken() {
+
+    /*if ('serviceWorker' in navigator) {
+        addEventListener('load', function () {
+            navigator.serviceWorker.register('./~q210043/firebase-messaging-sw.js');
+        });
+    }*/
+
     getToken(messaging, { vapidKey: VAPID_MESSAGING_KEY }).then((currentToken) => {
         if (currentToken) {
-            console.log(currentToken);
-
             registrationTokenStore.set(currentToken);
         } else {
             console.log('No registration token available. Request permission to generate one.');
@@ -19,7 +24,6 @@ export function loadFcmToken() {
         }
     }).catch((err) => {
         console.log('An error occurred while retrieving token. ', err);
-        requestPermissions();
     });
 }
 
