@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import Forecast from "./Forecast.svelte";
   import { getWeatherData } from "../service/WeatherService";
-    import type { Place } from "../model/Place";
+  import type { Place } from "../model/Place";
 
   let forecasts: any = [];
   let errorMessage: string = "";
@@ -11,6 +11,10 @@
 
   const getWeather = async () => {
     forecasts = await getWeatherData(place.lat, place.lon);
+
+    if(forecasts == null) {
+      errorMessage = "Erreur lors du chargement de la météo"
+    }
   }
 
  onMount(() => {

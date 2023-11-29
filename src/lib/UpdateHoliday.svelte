@@ -6,8 +6,8 @@
   import type { Group } from "../model/Group";
   import { currentGidStore } from "../stores/currentGroup";
   import { format } from "date-fns";
-    import LocationPicker from "./LocationPicker.svelte";
-    import { updateGroup } from "../service/GroupService";
+  import LocationPicker from "./LocationPicker.svelte";
+  import { updateGroup } from "../service/GroupService";
 
   const navigate = useNavigate();
 

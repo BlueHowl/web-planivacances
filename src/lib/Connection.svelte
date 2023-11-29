@@ -5,10 +5,12 @@
   import { login } from "../service/AuthService";
   import SignInGoogle from "./SignInGoogle.svelte";
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
-    import SignInFacebook from "./SignInFacebook.svelte";
-    import SignInX from "./SignInX.svelte";
+  import SignInFacebook from "./SignInFacebook.svelte";
+  import SignInX from "./SignInX.svelte";
 
   let validated: boolean = false;
+  let errorMessage: string|null = null;
+
   let isNewAccount: boolean = false;
 
   const navigate = useNavigate();
@@ -26,6 +28,8 @@
     ).then((result) => {
       if (result) {
         navigate("/");
+      } else {
+        errorMessage = "Erreur lors de la connexion"
       }
     });
   }
@@ -37,7 +41,12 @@
     <FormGroup floating label="Mail">
       <Input type="email" name="email" />
     </FormGroup>
-    <InputPasswordWithToggle />
+    <InputPasswordWithToggle validated={validated}/>
+
+    {#if errorMessage != null}
+      <p id="errorMessage">{errorMessage}</p>
+    {/if}
+
     <Link to="/register" class="primary">Pas encore de compte ?</Link>
     <Button color="primary" class="w-75 mb-3 mt-3">Connexion</Button>
     <SignInGoogle {isNewAccount} />
@@ -50,5 +59,9 @@
   #connectionForm {
     margin: 2rem auto;
     width: 35rem;
+  }
+
+  #errorMessage {
+    color: lightcoral;
   }
 </style>

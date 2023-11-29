@@ -10,7 +10,6 @@ import {
 } from "firebase/auth";
 import { userStore } from "../stores/user";
 import type { User } from '../model/User';
-import { firebaseConfig } from "../utils/config";
 import { userPerCountryStore } from "../stores/statByCountry";
 import { groupListStore } from "../stores/groups";
 import { currentGidStore } from "../stores/currentGroup";
@@ -20,6 +19,7 @@ import { groupInviteStore } from "../stores/groupInvite";
 import { customTokenStore } from "../stores/authToken";
 import { app } from "./FirebaseApp";
 import { sendFcmToken } from "./UserService";
+import { isLoadingStore } from "../stores/loading";
 
 const auth = getAuth(app);
 
@@ -73,6 +73,8 @@ export async function getIdToken() {
 }
 
 export async function login(email: string, password: string): Promise<boolean> {
+    isLoadingStore.set(true);
+    
     try {
         const response = await instance.post<string>("/auth/login", {
             mail: email,
@@ -83,18 +85,21 @@ export async function login(email: string, password: string): Promise<boolean> {
 
         const result = await authenticate(customToken);
 
-        console.log(result ? "Connexion au compte avec succès" : "Erreur lors de la connexion au compte");
+        isLoadingStore.set(false);
 
         return result
 
     } catch (error) {
         console.error(error);
+        isLoadingStore.set(false);
 
         return false;
     }
 }
 
 export async function register(name: string, surname: string, email: string, password: string): Promise<boolean> {
+    isLoadingStore.set(true);
+
     try {
         const response = await instance.post<string>("/auth/register", {
             username: `${surname} ${name}`,
@@ -106,19 +111,21 @@ export async function register(name: string, surname: string, email: string, pas
 
         const result = await authenticate(customToken)
 
-        console.log(result ? "Création du compte avec succès" : "Erreur lors de la création du compte")
+        isLoadingStore.set(false);
 
         return result;
     } catch (error) {
         console.error(error);
-
+        isLoadingStore.set(false);
+        
         return false;
     }
 }
 
 export const signInWithOtherProvider = async (provider: string) => {    
     try {
-        const authProvider = (provider == "google" ? new GoogleAuthProvider() : (provider == "facebook" ? new FacebookAuthProvider() : new TwitterAuthProvider()));
+        const authProvider = (provider == "google" ? new GoogleAuthProvider() : 
+        (provider == "facebook" ? new FacebookAuthProvider() : new TwitterAuthProvider()));
         authProvider.addScope("email");
         authProvider.setCustomParameters({
             'lang': auth.languageCode!

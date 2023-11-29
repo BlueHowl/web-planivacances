@@ -3,4 +3,4 @@ import { GCMEncryption, createEncryptionStorage, createSessionStorage, persist, 
 import { STORE_ENCRYPTION_KEY } from "../utils/config";
 
 const storage = createEncryptionStorage(createSessionStorage(), new GCMEncryption(STORE_ENCRYPTION_KEY))
-export let currentGidStore: Writable<string> = persist(writable(""), storage, "currentGid") as Writable<string>;
+export const currentGidStore: Writable<string> = persist(writable(""), storage, "currentGid") as Writable<string>;

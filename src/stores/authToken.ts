@@ -3,4 +3,4 @@ import { GCMEncryption, createEncryptionStorage, createLocalStorage, persist } f
 import { STORE_ENCRYPTION_KEY } from "../utils/config";
 
 const storage = createEncryptionStorage(createLocalStorage(), new GCMEncryption(STORE_ENCRYPTION_KEY))
-export let customTokenStore: Writable<string> = persist(writable(""), storage, "customToken") as Writable<string>;
+export const customTokenStore: Writable<string> = persist(writable(""), storage, "customToken") as Writable<string>;

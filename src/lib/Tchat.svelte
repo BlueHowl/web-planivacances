@@ -58,6 +58,10 @@
         messages.shift();
       }
       messages = [...messages, message];
+
+      var element = document.querySelector("footer");
+      element.scrollIntoView();
+
     }
 
 
@@ -105,6 +109,7 @@
     {/each}
   </section>
   <InputMessage on:send={sendMessage} />
+  <div style="height:2rem"/>
 {:else}
   <h1>Impossible de charger le tchat pour ce voyage</h1>
 {/if}
