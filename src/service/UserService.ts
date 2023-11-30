@@ -10,6 +10,14 @@ registrationTokenStore.subscribe(value => {
     registrationToken = value;
 });
 
+export async function onAddUser() {
+    try {
+        await instance.get<string>(`/users/number`);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export async function getUsersPerCountry(givenDate: string) {
     isLoadingStore.set(true);
     
