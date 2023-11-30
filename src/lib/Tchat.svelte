@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
+  import Pusher from "pusher-js";
+  import { PUSHER } from "../utils/config";
   import { CompatClient, Stomp, StompHeaders } from "@stomp/stompjs";
   import InputMessage from "./InputMessage.svelte";
   import MessageItem from "./MessageItem.svelte";
   import { formatTimestampForDisplay } from "../utils/DateFormatter";
-  import { userStore } from "../stores/User";
+  import { userStore } from "../stores/user";
   import { getIdToken } from "../service/AuthService";
   import { groupListStore } from "../stores/groups";
   import { currentGidStore as currentGidStore } from "../stores/currentGroup";
@@ -12,29 +14,33 @@
 
   let definedHoliday = false;
   let messages: any = [];
+  let token: string;
   let uid: string;
   let title: string;
   let groupId: string;
   let displayName: string;
-  let headers: StompHeaders | undefined;
-  let tchatWS: CompatClient | null;
+  let tchatWS: Pusher | null;
+  let previousMessagesLoaded: boolean = false;
 
   let groups: GroupMap = $groupListStore || {};
   let group = groups[$currentGidStore];
 
   function sendMessage(event: CustomEvent) {
-    if (tchatWS != null && headers != undefined) {
-      tchatWS.send(
-        "/app/message",
-        headers,
-        JSON.stringify({
+    if (token && groupId) {
+      fetch("http://localhost:8080/api/chat/message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
           sender: uid,
           displayName: displayName,
           groupId: groupId,
           content: event.detail.message,
           time: Date.now(),
-        })
-      );
+        }),
+      });
     }
   }
 
@@ -48,11 +54,6 @@
       title = group.groupName;
     }
 
-    const onMessageReceived = (message: any) => {
-      message = JSON.parse(message.body);
-      addMessage(message);
-    };
-
     function addMessage(message: any) {
       if (messages.length == 100) {
         messages.shift();
@@ -61,38 +62,59 @@
 
       var element = document.querySelector("footer");
       element.scrollIntoView();
-
     }
 
-
     onMount(async () => {
-      const token = await getIdToken();
+      token = await getIdToken();
       if (token != null) {
-        tchatWS = Stomp.client(
-          "ws://localhost:8080/websocket-groupMessages" //"wss://studapps.cg.helmo.be:5011/REST_CAO_BART/websocket-groupMessages"
-        );
-
-        headers = {
-          Authorization: `Bearer ${token}`,
-          GroupId: groupId,
-        };
-
-        tchatWS.connect(headers, () => {
-          console.log("WebSocket connecté");
-          tchatWS?.subscribe(
-            "/user/group/messages",
-            (message) => {
-              onMessageReceived(message);
+        tchatWS = new Pusher(PUSHER.key, {
+          cluster: PUSHER.cluster,
+          authEndpoint: "http://localhost:8080/api/chat/",
+          auth: {
+            headers: {
+              Authorization: `Bearer ${token}`,
             },
-            headers
-          );
-          onDestroy(() => {
-            tchatWS?.unsubscribe("/user/group/messages", headers);
-            tchatWS?.disconnect();
-          });
+          },
+        });
+
+        tchatWS.connect();
+
+        const channel = tchatWS.subscribe(`private-${groupId}`);
+
+        channel.bind("pusher:subscription_succeeded", () => {
+          loadPreviousMessages(token, groupId);
+        });
+
+        channel.bind("new_messages", (message) => {
+          if (previousMessagesLoaded) {
+            addMessage(message);
+          }
         });
       }
     });
+    onDestroy(() => {
+      tchatWS?.unsubscribe(groupId);
+      tchatWS?.unbind_all();
+      tchatWS?.disconnect();
+    });
+
+    const loadPreviousMessages = async (authToken: string, gid: string) => {
+      const response = await fetch("http://localhost:8080/api/chat/messages", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          GID: gid,
+        },
+      });
+
+      if (response.ok) {
+        const messages = await response.json();
+        messages.forEach((message) => {
+          addMessage(message);
+        });
+        previousMessagesLoaded = true;
+      }
+    };
   }
 </script>
 
@@ -109,7 +131,7 @@
     {/each}
   </section>
   <InputMessage on:send={sendMessage} />
-  <div style="height:2rem"/>
+  <div style="height:2rem" />
 {:else}
   <h1>Impossible de charger le tchat pour ce voyage</h1>
 {/if}
