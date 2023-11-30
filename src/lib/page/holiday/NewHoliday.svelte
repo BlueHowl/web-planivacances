@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Form, FormGroup, Input, Button } from "sveltestrap";
-  import type { Group } from "../model/Group";
-  import { createGroup } from "../service/GroupService";
-  import LocationPicker from "./LocationPicker.svelte";
+  import type { Group } from "../../../model/Group";
+  import { createGroup } from "../../../service/GroupService";
+  import LocationPicker from "./../../molecule/LocationPicker.svelte";
   import { format } from "date-fns";
   import { useNavigate } from "svelte-navigator";
   import { currentGidStore } from "../../../stores/currentGroup";

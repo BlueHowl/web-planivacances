@@ -2,9 +2,9 @@
   import { useNavigate } from "svelte-navigator";
   import { Button } from "sveltestrap";
   import { format } from "date-fns";
-  import Calendar from "../assets/calendrier.png";
-  import Weather from "../assets/meteo.png";
-  import Tchat from "../assets/tchat.png";
+  import Calendar from "../../../assets/calendrier.png";
+  import Weather from "../../../assets/meteo.png";
+  import Tchat from "../../../assets/tchat.png";
   import { groupListStore } from "../../../stores/groups";
   import type { GroupMap } from "../../../model/GroupMap";
   import { currentGidStore as currentGidStore } from "../../../stores/currentGroup";

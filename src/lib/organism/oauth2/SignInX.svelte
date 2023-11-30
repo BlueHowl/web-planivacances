@@ -1,7 +1,7 @@
 <script lang="ts">
   import { signInWithOtherProvider } from "../../../service/AuthService";
   import { Button } from "sveltestrap";
-  import xLogo from "../assets/logo-x.png";
+  import xLogo from "../../../assets/logo-x.png";
   import { useNavigate } from "svelte-navigator";
   import { onAddUser } from "../../../service/UserService";
 
