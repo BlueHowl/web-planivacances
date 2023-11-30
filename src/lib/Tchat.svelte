@@ -60,8 +60,13 @@
       }
       messages = [...messages, message];
 
+<<<<<<< HEAD
       var element = document.querySelector("footer");
       element.scrollIntoView();
+=======
+      //scroll down when new message 
+      document.querySelector("footer")?.scrollIntoView();
+>>>>>>> 428c6e28b018b573f1d5f3ca4a4a3dd8090e6510
     }
 
     onMount(async () => {
