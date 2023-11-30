@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { Router, Route } from "svelte-navigator";
-
-  let basepath = import.meta.env.BASE_URL;
-
+  import { Router, Route, navigate } from "svelte-navigator";
   import Footer from "./lib/Footer.svelte";
   import Header from "./lib/Header.svelte";
   import Home from "./lib/Home.svelte";
@@ -20,10 +17,20 @@
   import Tchat from "./lib/Tchat.svelte";
   import Weather from "./lib/Weather.svelte";
   import NotificationPage from "./lib/NotificationPage.svelte";
+  import LoadingIndicator from "./lib/LoadingIndicator.svelte";
+  import { loadFcmToken } from "./service/NotificationService";
+
+  let basepath = import.meta.env.BASE_URL;
+
+  loadFcmToken();
+
 </script>
 
 <Router {basepath}>
+  <LoadingIndicator />
+
   <Header />
+  
   <main class="app">
     <Route path="/" component={Home} />
     <Route path="/contact" component={Contact} />

@@ -6,6 +6,8 @@ import { groupListStore } from "../stores/groups";
 import { groupInviteStore } from "../stores/groupInvite";
 import { userStore } from "../stores/user";
 import { instance } from "./ApiClient";
+import { sendFcmToken } from "./UserService";
+import { isLoadingStore } from "../stores/loading";
 
 let user: User|null;
 
@@ -14,21 +16,50 @@ userStore.subscribe(value => {
 });
 
 export async function createGroup(group: Group): Promise<string|null> {
+    isLoadingStore.set(true);
+
     try {
         const response = await instance.post<string>(`/group`, group);
 
         if(response.status == 200) {
+
+            await sendFcmToken(response.data);
+
+            isLoadingStore.set(false);
+
             return response.data;
         }
         
     } catch (error) {
         console.error(error);
+        isLoadingStore.set(false);
     }
 
     return null;
 }
 
+export async function updateGroup(gid: string, group: Group): Promise<boolean|null> {
+    isLoadingStore.set(true);
+
+    try {
+        const response = await instance.post<string>(`/group/${gid}`, group);
+
+        if(response.status == 200) {
+            isLoadingStore.set(false);
+            return response.data as unknown as boolean;
+        }
+        
+    } catch (error) {
+        console.error(error);
+        isLoadingStore.set(false);
+    }
+
+    return false;
+}
+
 export async function loadUserGroups() {
+    isLoadingStore.set(true);
+    
     const groups: GroupMap = {};
 
     try {
@@ -42,17 +73,20 @@ export async function loadUserGroups() {
             });
 
             groupListStore.set(groups);
+            isLoadingStore.set(false);
             
             console.log("Groupes chargés");
             
         }
     } catch (error) {
         console.error(error);
+        isLoadingStore.set(false);
     }
 
 }
 
 export async function loadUserGroupInvites() {
+    isLoadingStore.set(true);
 
     try {
         const response = await instance.get<string>(`/group/invitation`);
@@ -60,11 +94,13 @@ export async function loadUserGroupInvites() {
         if(response.status == 200) {
 
             groupInviteStore.set(response.data as unknown as Array<GroupInvite>);
+            isLoadingStore.set(false);
             
             console.log("Invitations aux groupes chargées");
         }
     } catch (error) {
         console.error(error);
+        isLoadingStore.set(false);
     }
 
 }
@@ -93,6 +129,8 @@ export async function acceptGroupInvite(gid: string) {
 
         if(response.status == 200 && response.data) {
             loadUserGroupInvites()
+
+            await sendFcmToken(gid);
 
             console.log("Invitation acceptée");
         }

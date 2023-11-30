@@ -1,17 +1,22 @@
 <script lang="ts">
   import { FormGroup, Input } from "sveltestrap";
   import "@fortawesome/fontawesome-free/css/all.min.css";
+
+  export let name: string = "password";
+  export let validated: boolean = false;
+
   let passwordVisible: boolean = false;
+
   function togglePasswordVisibility() {
     passwordVisible = !passwordVisible;
   }
 </script>
 
 <FormGroup>
-  <div id="password-container">
+  <div id="password-container" class="{validated ? "i-shift" : ""}">
     <Input
       type={passwordVisible ? "text" : "password"}
-      name="password"
+      name={name}
       placeholder="Mot de passe"
       feedback="Mot de passe requis"
       required
@@ -41,4 +46,9 @@
   #password-container i {
     margin-left: -30px;
   }
+
+  .i-shift i {
+    margin-left: -60px !important;
+  }
+  
 </style>

@@ -1,56 +1,67 @@
 <script lang="ts">
-  import { useLocation } from "svelte-navigator";
   import { Form, FormGroup, Input, Button } from "sveltestrap";
+  import type { Activity } from "../model/Activity";
+  import LocationPicker from "./LocationPicker.svelte";
+  import { differenceInSeconds, format } from "date-fns";
+  import { updateActivity } from "../service/ActivityService";
+  import { useNavigate } from "svelte-navigator";
+  import { activityListStore } from "../stores/activities";
+  import type { ActivityMap } from "../model/ActivityMap";
+  import { currentAidStore } from "../stores/currentActivity";
 
-  const location = useLocation();
+  const navigate = useNavigate();
 
-  let definedActivity = false;
-  let title: string;
-  let startDate: string;
+  let activities: ActivityMap = $activityListStore || {};
+
+  let activity: Activity;
   let endDate: string;
-  let place: string;
-  let description: string;
-  let selectedIdPlace: number;
 
-  let addresses = [
-    { id: 1, completeAddress: "Rue Montagne 3 40003 Montagne" },
-    { id: 2, completeAddress: "Rue de la Mer 5 50005 Mer" },
-  ];
+  currentAidStore.subscribe(value => {
+    activity = activities[value];
+    formatEndDate();
+  });
 
-  if (location && $location.state) {
-    definedActivity = true;
-    const state = $location.state;
-    title = state.title;
-    startDate = formatDateForInput(state.startDate);
-    endDate = formatDateForInput(state.endDate);
-    place = state.place;
-    description = state.description;
-    selectedIdPlace = getIdAddress(place);
+  function formatEndDate() {
+    if(activity.startDate != null) {
+      endDate = format(
+        new Date(new Date(activity.startDate).getTime() + activity.duration * 1000), 
+        "yyyy-MM-dd'T'HH:mm:ss.SSS");
+    }
   }
 
-  function getIdAddress(place: string) {
-    let findAddressId = addresses.findIndex(
-      (elem) => elem.completeAddress === place
-    );
-    return findAddressId != -1 ? findAddressId + 1 : 1;
+  function handleLocationPicker(event: CustomEvent) {
+    activity.place = event.detail.selectedPlace;
   }
 
-  function formatDateForInput(dateString: string) {
-    const [datePart, timePart] = dateString.split(" ");
+  function onSubmit(e: any) {
+    e.preventDefault();
 
-    const [day, month, year] = datePart.split("/");
-    const [hour, minute, second] = timePart.split(":");
+    if(activity.startDate != null && endDate != null) {
 
-    return `${year}-${month}-${day}T${hour}:${minute}`;
+      activity.startDate = format(
+        new Date(activity.startDate), 
+        "yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+      activity.duration = Math.abs(differenceInSeconds(new Date(endDate), new Date(activity.startDate)));
+      //console.log(activity.duration); TODO check
+      updateActivity(activity).then((isDone: boolean | null) => {
+        if(isDone) {
+          navigate("/planning");
+        } else {
+          console.error("Erreur lors de la modification de l'activité");
+        }
+      });
+    }
+
   }
 </script>
 
 <h1>Modification d'une activité</h1>
 <section id="updateActivityForm">
-  {#if definedActivity}
+  {#if activity != null}
     <Form>
       <FormGroup floating label="Titre de l'activité">
-        <Input id="activityTitle" name="activityTitle" bind:value={title} />
+        <Input id="activityTitle" name="activityTitle" bind:value={activity.title} />
       </FormGroup>
       <FormGroup floating label="Date de début">
         <Input
@@ -58,7 +69,7 @@
           type="datetime-local"
           name="startActivityDate"
           style="margin-right:0.2rem;"
-          bind:value={startDate}
+          bind:value={activity.startDate}
         />
       </FormGroup>
       <FormGroup floating label="Date de fin">
@@ -70,27 +81,16 @@
           bind:value={endDate}
         />
       </FormGroup>
-      <FormGroup floating label="Lieu">
-        <Input
-          type="select"
-          name="activityPlace"
-          id="activityPlace"
-          bind:value={selectedIdPlace}
-        >
-          {#each addresses as address}
-            <option value={address.id}>{address.completeAddress}</option>
-          {/each}
-        </Input>
-      </FormGroup>
+      <LocationPicker place={activity.place} on:place={handleLocationPicker} />
       <FormGroup floating label="Ecrivez une description ici...">
         <Input
           id="activityDescription"
           type="textarea"
           name="activityDescription"
-          bind:value={description}
+          bind:value={activity.description}
         />
       </FormGroup>
-      <Button color="primary" class="w-75 mb-3 mt-3">Modifier</Button>
+      <Button color="primary" class="w-75 mb-3 mt-3" on:click={onSubmit}>Modifier</Button>
     </Form>
   {:else}
     <h1>Modification de l'activité impossible</h1>

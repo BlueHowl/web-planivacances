@@ -1,5 +1,4 @@
-import { instance, createAuthInstance} from "./ApiClient";
-import { initializeApp } from "firebase/app";
+import { instance, setToken as setTokenToInstance} from "./ApiClient";
 import { 
     getAuth, 
     GoogleAuthProvider, 
@@ -11,29 +10,23 @@ import {
 } from "firebase/auth";
 import { userStore } from "../stores/user";
 import type { User } from '../model/User';
-import { firebaseConfig } from "../utils/config";
-//import { setCustomToken, getCustomToken, clearCustomToken, customTokenStore } from "../stores/authToken";
 import { userPerCountryStore } from "../stores/statByCountry";
 import { groupListStore } from "../stores/groups";
 import { currentGidStore } from "../stores/currentGroup";
 import { activityListStore } from "../stores/activities";
 import { currentAidStore } from "../stores/currentActivity";
 import { groupInviteStore } from "../stores/groupInvite";
-import { customTokenStore } from "../stores/AuthToken";
+import { customTokenStore } from "../stores/authToken";
+import { app } from "./FirebaseApp";
+import { sendFcmToken } from "./UserService";
+import { isLoadingStore } from "../stores/loading";
 
-const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 auth.useDeviceLanguage();
 
-customTokenStore.subscribe((customToken: string|null) => {
-    if(customToken) {
-        authenticate(customToken);
-    }
-});
-
 export async function verifyToken(token: string): Promise<boolean> {
-    createAuthInstance(token);
+    setTokenToInstance(token);
 
     try {
         const response = await instance.post<string>("/auth/token");
@@ -49,21 +42,23 @@ export async function verifyToken(token: string): Promise<boolean> {
     }
 }
 
-export async function authenticate(customToken: string): Promise<boolean> {
+export async function authenticate(customToken: string): Promise<string|null> {
     if (customToken != null) {
         const credentials = await signInWithCustomToken(auth, customToken)
         const token = await credentials.user.getIdToken(false);
 
         console.log("Authentification réussie");
-        //setCustomToken(customToken);
+
         customTokenStore.set(customToken);
-        createAuthInstance(token);
+        setTokenToInstance(token);
         await setCurrentUser();
-        return true;
+        await sendFcmToken(null);
+
+        return token;
     } else {
         console.error("Erreur lors de l'authentification'");
 
-        return false;
+        return null;
     }
 }
 
@@ -72,6 +67,8 @@ export async function getIdToken() {
 }
 
 export async function login(email: string, password: string): Promise<boolean> {
+    isLoadingStore.set(true);
+    
     try {
         const response = await instance.post<string>("/auth/login", {
             mail: email,
@@ -82,18 +79,21 @@ export async function login(email: string, password: string): Promise<boolean> {
 
         const result = await authenticate(customToken);
 
-        console.log(result ? "Connexion au compte avec succès" : "Erreur lors de la connexion au compte");
+        isLoadingStore.set(false);
 
-        return result
+        return result != null;
 
     } catch (error) {
         console.error(error);
+        isLoadingStore.set(false);
 
         return false;
     }
 }
 
 export async function register(name: string, surname: string, email: string, password: string): Promise<boolean> {
+    isLoadingStore.set(true);
+
     try {
         const response = await instance.post<string>("/auth/register", {
             username: `${surname} ${name}`,
@@ -105,19 +105,21 @@ export async function register(name: string, surname: string, email: string, pas
 
         const result = await authenticate(customToken)
 
-        console.log(result ? "Création du compte avec succès" : "Erreur lors de la création du compte")
+        isLoadingStore.set(false);
 
-        return result;
+        return result != null;
     } catch (error) {
         console.error(error);
-
+        isLoadingStore.set(false);
+        
         return false;
     }
 }
 
 export const signInWithOtherProvider = async (provider: string) => {    
     try {
-        const authProvider = (provider == "google" ? new GoogleAuthProvider() : (provider == "facebook" ? new FacebookAuthProvider() : new TwitterAuthProvider()));
+        const authProvider = (provider == "google" ? new GoogleAuthProvider() : 
+        (provider == "facebook" ? new FacebookAuthProvider() : new TwitterAuthProvider()));
         authProvider.addScope("email");
         authProvider.setCustomParameters({
             'lang': auth.languageCode!
@@ -127,7 +129,8 @@ export const signInWithOtherProvider = async (provider: string) => {
         const token = await result.user.getIdToken(false);
 
         if(await verifyToken(token)) {
-            createAuthInstance(token);
+            setTokenToInstance(token);
+            
             await setCurrentUser();
             return true;
         }

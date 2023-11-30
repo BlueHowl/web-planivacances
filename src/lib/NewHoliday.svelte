@@ -78,16 +78,6 @@
         style="margin-right:0.2rem;"
       />
     </FormGroup>
-    <!--<FormGroup floating label="Lieu">
-      <Input 
-      id="holidayPlace"
-      type="select" 
-      name="holidayPlace">
-        {#each addresses as address}
-          <option value={address.id}>{address.completeAddress}</option>
-        {/each}
-      </Input>
-    </FormGroup>-->
     <LocationPicker on:place={handleLocationPicker} />
     <FormGroup floating label="Ecrivez une description ici...">
       <Input

@@ -7,7 +7,7 @@
   let map: any;
   let marker: any;
 
-  let place: Place = {
+  export let place: Place|null = {
       street: '',
       number: '',
       city: '',
@@ -26,7 +26,9 @@
     script.defer = true;
 
     script.onload = () => {
-      getUserLocation();
+      if(place == null) {
+        getUserLocation();
+      }
       initMap();
     };
 

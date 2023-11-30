@@ -4,4 +4,4 @@ import { createEncryptionStorage, createSessionStorage, GCMEncryption, persist }
 import { STORE_ENCRYPTION_KEY } from "../utils/config";
 
 const storage = createEncryptionStorage(createSessionStorage(), new GCMEncryption(STORE_ENCRYPTION_KEY))
-export let activityListStore: Writable<ActivityMap> = persist(writable({}), storage, "activities") as Writable<ActivityMap>;
+export const activityListStore: Writable<ActivityMap> = persist(writable({}), storage, "activities") as Writable<ActivityMap>;

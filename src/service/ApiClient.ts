@@ -1,19 +1,58 @@
-import redaxios from "redaxios";
+import axios from "axios";
+import { authenticate } from "./AuthService";
+import { customTokenStore } from "../stores/authToken";
 
-export let instance = redaxios.create({
-    baseURL: 'http://localhost:8080/api'//'https://studapps.cg.helmo.be:5011/REST_CAO_BART/api'
+let customToken: string;
+
+customTokenStore.subscribe(value => {
+    customToken = value;
 });
 
-export function createAuthInstance(authToken : string) {
-    instance = redaxios.create({
-        baseURL: 'http://localhost:8080/api',//'https://studapps.cg.helmo.be:5011/REST_CAO_BART/api',
-        headers: {
-            'Authorization': `Bearer ${authToken}`,
-            'Content-Type': 'application/json'
-        }
-    });
+export let weatherInstance = axios.create({
+    baseURL: `https://api.weatherapi.com/v1`,
+});
+
+
+export const instance = axios.create({
+  baseURL: 'http://localhost:8080/api',
+  headers: {
+    'Content-Type': 'application/json'
+    }
+});
+
+export const setToken = (token: string) => {
+    instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
-export let weatherInstance = redaxios.create({
-    baseURL: `https://api.weatherapi.com/v1`
-});
+const refreshToken = async () => {
+    // Logic to fetch a new token
+    const newToken = await authenticate(customToken);
+  
+    // Update the Axios instance headers with the new token
+    instance.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+  
+    // Return the new token
+    return newToken;
+};
+
+// Add response interceptor
+instance.interceptors.response.use(
+  (response) => {
+    // Return a successful response
+    return response;
+  },
+  async (error) => {
+    // Check if the error is due to an expired token
+    if (error.response && error.response.status === 401) {
+      // Token is expired, refresh it
+      const newToken = await refreshToken();
+
+      // Retry the original request with the new token
+      error.config.headers['Authorization'] = `Bearer ${newToken}`;
+      return instance.request(error.config);
+    }
+
+    // If not an error due to an expired token, return the error
+    return Promise.reject(error);
+  }
+);

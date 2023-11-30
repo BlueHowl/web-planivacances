@@ -4,4 +4,4 @@ import { createEncryptionStorage, createSessionStorage, GCMEncryption, persist }
 import { STORE_ENCRYPTION_KEY } from "../utils/config";
 
 const storage = createEncryptionStorage(createSessionStorage(), new GCMEncryption(STORE_ENCRYPTION_KEY))
-export let groupInviteStore: Writable<Array<GroupInvite> | null> = persist(writable(null), storage, "groupInvites") as Writable<Array<GroupInvite> | null>;
+export const groupInviteStore: Writable<Array<GroupInvite> | null> = persist(writable(null), storage, "groupInvites") as Writable<Array<GroupInvite> | null>;

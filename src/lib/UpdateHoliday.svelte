@@ -1,47 +1,60 @@
 <script lang="ts">
-  import { useLocation } from "svelte-navigator";
+  import { useNavigate } from "svelte-navigator";
   import { Form, FormGroup, Input, Button } from "sveltestrap";
+  import type { GroupMap } from "../model/GroupMap";
+  import { groupListStore } from "../stores/groups";
+  import type { Group } from "../model/Group";
+  import { currentGidStore } from "../stores/currentGroup";
+  import { format } from "date-fns";
+  import LocationPicker from "./LocationPicker.svelte";
+  import { updateGroup } from "../service/GroupService";
 
-  const location = useLocation();
+  const navigate = useNavigate();
 
-  let definedHoliday = false;
-  let title: string;
-  let startDate: string;
-  let endDate: string;
-  let place: string;
-  let description: string;
-  let selectedIdPlace: number;
+  let groups: GroupMap = $groupListStore || {};
+  let currentGid: string;
+  let group: Group;
 
-  let addresses = [
-    { id: 1, completeAddress: "Rue des Pottiers 3 2344 LoveCity" },
-    { id: 2, completeAddress: "Rue de Harlez 25 4000 Liège" },
-  ];
+  currentGidStore.subscribe(value => {
+    currentGid = value;
+    group = groups[value];
+  });
 
-  if (location && $location.state) {
-    definedHoliday = true;
-    const state = $location.state;
-    title = state.title;
-    startDate = state.startDate;
-    endDate = state.endDate;
-    place = state.place;
-    description = state.description;
-    selectedIdPlace = getIdAddress(place);
+  function handleLocationPicker(event: CustomEvent) {
+    group.place = event.detail.selectedPlace;
   }
 
-  function getIdAddress(place: string) {
-    let findAddressId = addresses.findIndex(
-      (elem) => elem.completeAddress === place
-    );
-    return findAddressId != -1 ? findAddressId + 1 : 1;
+  function onSubmit(e: any) {
+    e.preventDefault();
+
+    if(group.startDate != null && group.endDate != null) {
+      group.startDate = format(
+        new Date(group.startDate),
+        "yyyy-MM-dd'T'HH:mm:ss.SSS"
+      );
+      group.endDate = format(
+        new Date(group.endDate),
+        "yyyy-MM-dd'T'HH:mm:ss.SSS"
+      );
+
+      updateGroup(currentGid, group).then((isDone: boolean | null) => {
+        if (isDone) {
+          navigate("/holidays");
+        } else {
+          console.error("Erreur lors de la modification du groupe");
+        }
+      });
+    }
   }
+  
 </script>
 
 <h1>Modification d'une période de vacances</h1>
 <section id="updateHolidayForm">
-  {#if definedHoliday}
+  {#if group != null}
     <Form>
       <FormGroup floating label="Titre des vacances">
-        <Input id="holidayTitle" name="holidayTitle" bind:value={title} />
+        <Input id="holidayTitle" name="holidayTitle" bind:value={group.groupName} />
       </FormGroup>
       <FormGroup floating label="Date de début">
         <Input
@@ -49,7 +62,7 @@
           type="date"
           name="startHolidayDate"
           style="margin-right:0.2rem;"
-          bind:value={startDate}
+          bind:value={group.startDate}
         />
       </FormGroup>
       <FormGroup floating label="Date de fin">
@@ -58,30 +71,19 @@
           type="date"
           name="endHolidayDate"
           style="margin-right:0.2rem;"
-          bind:value={endDate}
+          bind:value={group.endDate}
         />
       </FormGroup>
-      <FormGroup floating label="Lieu">
-        <Input
-          type="select"
-          name="holidayPlace"
-          id="holidayPlace"
-          bind:value={selectedIdPlace}
-        >
-          {#each addresses as address}
-            <option value={address.id}>{address.completeAddress}</option>
-          {/each}
-        </Input>
-      </FormGroup>
+      <LocationPicker place={group.place} on:place={handleLocationPicker} />
       <FormGroup floating label="Ecrivez une description ici...">
         <Input
           id="holidayDescription"
           type="textarea"
           name="holidayDescription"
-          bind:value={description}
+          bind:value={group.description}
         />
       </FormGroup>
-      <Button color="primary" class="w-75 mb-3 mt-3">Modifier</Button>
+      <Button color="primary" class="w-75 mb-3 mt-3" on:click={onSubmit}>Modifier</Button>
     </Form>
   {:else}
     <h1>Modification de la période de vacances impossible</h1>

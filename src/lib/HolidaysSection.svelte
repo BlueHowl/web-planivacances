@@ -12,11 +12,9 @@
   let groups: Group[] = [];
 
   onMount(() => {
-    const unsubscribe = groupListStore.subscribe((value) => {
+    groupListStore.subscribe((value) => {
       groups = Object.values(value ?? {}) || [];
     });
-
-    return unsubscribe;
   });
 
   loadUserGroups();
@@ -33,8 +31,8 @@
       <CustomCard
         id={group.gid}
         title={group.groupName}
-        startDate={group.startDate}
-        endDate={group.endDate}
+        startDate={group.startDate ?? ""}
+        endDate={group.endDate ?? ""}
         description={group.description}
         on:navToDetails={handleNavToDetails}
       />

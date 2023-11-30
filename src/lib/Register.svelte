@@ -5,10 +5,12 @@
   import { register } from "../service/AuthService";
   import SignInGoogle from "./SignInGoogle.svelte";
   import InputPasswordWithToggle from "./InputPasswordWithToggle.svelte";
-    import SignInFacebook from "./SignInFacebook.svelte";
-    import SignInX from "./SignInX.svelte";
+  import SignInFacebook from "./SignInFacebook.svelte";
+  import SignInX from "./SignInX.svelte";
 
   let validated: boolean = false;
+  let errorMessage: string|null = null;
+
   let isNewAccount: boolean = true;
 
   const navigate = useNavigate();
@@ -16,20 +18,30 @@
   function onSubmit(e: any) {
     e.preventDefault();
 
-    validated = true;
-
     const formData = new FormData(e.target);
 
-    register(
-      formData.get("name") as string, 
-      formData.get("surname") as string, 
-      formData.get("email") as string, 
-      formData.get("password") as string)
-    .then((result) => {
-      if (result) {
-        navigate("/");
-      }
-    })
+    const password = formData.get("password") as string;
+    const passwordRepeat = formData.get("passwordRepeat") as string;
+
+    if(password == passwordRepeat) {
+      validated = true;
+      errorMessage = null;
+
+      register(
+        formData.get("name") as string, 
+        formData.get("surname") as string, 
+        formData.get("email") as string, 
+        formData.get("password") as string)
+      .then((result) => {
+        if (result) {
+          navigate("/");
+        } else {
+          errorMessage = "problème lors de la création du compte"
+        }
+      });
+    } else {
+      errorMessage = "problème de correspondance des mots de passe"
+    }
   }
 </script>
 
@@ -56,7 +68,13 @@
         required
       />
     </FormGroup>
-    <InputPasswordWithToggle />
+    <InputPasswordWithToggle validated={validated} />
+    <InputPasswordWithToggle validated={validated} name="passwordRepeat"/>
+
+    {#if errorMessage != null}
+      <p id="errorMessage">{errorMessage}</p>
+    {/if}
+
     <Link to="/connection" class="primary">Vous avez déjà un compte ?</Link>
     <Button color="primary" class="w-75 mb-3 mt-3">Créer un compte</Button>
     <SignInGoogle {isNewAccount} />
@@ -70,4 +88,9 @@
     margin: 2rem auto;
     width: 35rem;
   }
+
+  #errorMessage {
+    color: lightcoral;
+  }
+
 </style>
