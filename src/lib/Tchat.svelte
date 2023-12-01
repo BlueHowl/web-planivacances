@@ -1,8 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import Pusher from "pusher-js";
+  import Pusher, { Channel } from "pusher-js";
   import { PUSHER } from "../utils/config";
-  import { CompatClient, Stomp, StompHeaders } from "@stomp/stompjs";
   import InputMessage from "./InputMessage.svelte";
   import MessageItem from "./MessageItem.svelte";
   import { formatTimestampForDisplay } from "../utils/DateFormatter";
@@ -20,6 +19,7 @@
   let groupId: string;
   let displayName: string;
   let tchatWS: Pusher | null;
+  let channel: Channel | null;
   let previousMessagesLoaded: boolean = false;
 
   let groups: GroupMap = $groupListStore || {};
@@ -78,7 +78,7 @@
 
         tchatWS.connect();
 
-        const channel = tchatWS.subscribe(`private-${groupId}`);
+        channel = tchatWS.subscribe(`private-${groupId}`);
 
         channel.bind("pusher:subscription_succeeded", () => {
           loadPreviousMessages(token, groupId);
@@ -92,8 +92,10 @@
       }
     });
     onDestroy(() => {
-      tchatWS?.unsubscribe(groupId);
-      tchatWS?.unbind_all();
+      console.log("onDestroy called");
+      channel?.unbind("pusher:subscription_succeeded");
+      channel?.unbind("new_messages");
+      tchatWS?.unsubscribe(`private-${groupId}`);
       tchatWS?.disconnect();
     });
 
