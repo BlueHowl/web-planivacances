@@ -1,19 +1,19 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import Pusher, { Channel } from "pusher-js";
-  import { PUSHER } from "../utils/config";
-  import InputMessage from "./InputMessage.svelte";
-  import MessageItem from "./MessageItem.svelte";
-  import { formatTimestampForDisplay } from "../utils/DateFormatter";
-  import { userStore } from "../stores/user";
-  import { getIdToken } from "../service/AuthService";
-  import { groupListStore } from "../stores/groups";
-  import { currentGidStore as currentGidStore } from "../stores/currentGroup";
-  import type { GroupMap } from "../model/GroupMap";
+  import { PUSHER } from "../../utils/config";
+  import InputMessage from "../organism/InputMessage.svelte";
+  import MessageItem from "../molecule/MessageItem.svelte";
+  import { formatTimestampForDisplay } from "../../utils/DateFormatter";
+  import { userStore } from "../../stores/user";
+  import { getIdToken } from "../../service/AuthService";
+  import { groupListStore } from "../../stores/groups";
+  import { currentGidStore as currentGidStore } from "../../stores/currentGroup";
+  import type { GroupMap } from "../../model/GroupMap";
 
   let definedHoliday = false;
   let messages: any = [];
-  let token: string | undefined;
+  let token: string;
   let uid: string;
   let title: string;
   let groupId: string;

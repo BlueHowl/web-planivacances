@@ -26,13 +26,11 @@
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@joeattardi/emoji-button": "4.6.4",
     "@macfja/svelte-persistent-store": "^2.4.1",
-    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.6.2",
     "date-fns": "^2.30.0",
     "firebase": "^10.4.0",
     "fullcalendar": "^6.1.9",
     "pusher-js": "^8.4.0-rc1",
     "redaxios": "^0.5.1",
-    "sveltestrap": "^5.11.2"
-  }
+    "sveltestrap": "^5.11.2"}
 }
