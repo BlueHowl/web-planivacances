@@ -106,8 +106,12 @@ export async function loadUserGroupInvites() {
 }
 
 export async function sendGroupInvite(gid: string, mail: string) {
+    isLoadingStore.set(true);
+
     if(user != null && mail == user.email) {
         console.log("Impossible de s'inviter soit même");
+        alert("Impossible de s'inviter soit même");
+        isLoadingStore.set(false);
         return;
     }
 
@@ -116,9 +120,12 @@ export async function sendGroupInvite(gid: string, mail: string) {
 
         if(response.status == 200 && response.data) {     
             console.log("Invitation envoyée");
+            isLoadingStore.set(false);
         }
     } catch (error) {
         console.error(error);
+        alert("Erreur lors de l'envoi de l'invitation");
+        isLoadingStore.set(false);
     }
 
 }

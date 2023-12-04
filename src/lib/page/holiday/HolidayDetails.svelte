@@ -26,8 +26,8 @@
 
     if(group != null && group.place != null) {
       address = `${group.place.street}, ${group.place.number} ${group.place.city} ${group.place.country}`;
-      formattedStartDate = format(new Date(group.startDate), "dd/MM/yyyy");
-      formattedEndDate = format(new Date(group.endDate), "dd/MM/yyyy");
+      formattedStartDate = format(new Date(group.startDate ?? ""), "dd/MM/yyyy");
+      formattedEndDate = format(new Date(group.endDate ?? ""), "dd/MM/yyyy");
     }
   });
 
@@ -77,15 +77,6 @@
     <h2>Du {formattedStartDate} au {formattedEndDate}</h2>
     <h3>{address}</h3>
     <p>{group.description}</p>
-    <!--<FormGroup style="display:flex;justify-content:center;">
-      <Input
-        type="switch"
-        label="Publier ce voyage"
-        bind:checked={isPublish}
-        on:change={handleSwitchChange}
-      />
-    </FormGroup>-->
-    <!--En faire un nouveau composant ? (ActionsForHoliday) -->
     <div id="moreActionsForHoliday">
       <div
         id="goToPlanning"
