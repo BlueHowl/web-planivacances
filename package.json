@@ -31,7 +31,6 @@
     "firebase": "^10.4.0",
     "fullcalendar": "^6.1.9",
     "pusher-js": "^8.4.0-rc1",
-    "sveltestrap": "^5.11.2",
-    "websocket-ts": "^2.1.5"
-  }
+    "redaxios": "^0.5.1",
+    "sveltestrap": "^5.11.2"}
 }

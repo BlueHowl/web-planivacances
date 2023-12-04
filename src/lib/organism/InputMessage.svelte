@@ -17,6 +17,8 @@
   function onSubmit(e: any) {
     e.preventDefault();
 
+    messageText.trim();
+
     if (messageText) {
       dispatch("send", { message: messageText });
       messageText = "";
@@ -36,7 +38,6 @@
 
 <Form>
   <FormGroup>
-
     <div id="message-container">
       <EmojiPicker on:change={appendEmoji} />
 
@@ -54,7 +55,6 @@
         on:click={onSubmit}
         on:keypress={onSubmit}
       />
-
     </div>
   </FormGroup>
 </Form>
