@@ -13,7 +13,7 @@
 
   let definedHoliday = false;
   let messages: any = [];
-  let token: string;
+  let token: string | undefined;
   let uid: string;
   let title: string;
   let groupId: string;

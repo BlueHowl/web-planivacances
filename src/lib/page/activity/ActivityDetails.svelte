@@ -23,7 +23,7 @@
 
     if(activity != null && activity.place != null) {
       address = `${activity.place.street}, ${activity.place.number} ${activity.place.city} ${activity.place.country}`;
-      formattedStartDate = format(new Date(activity.startDate), "dd/MM/yyyy");
+      formattedStartDate = format(new Date(activity.startDate ?? ""), "dd/MM/yyyy");
       formattedEndDate = format(new Date(new Date(activity.startDate ?? "").getTime() + activity.duration * 1000), "dd/MM/yyyy");
     }
   });

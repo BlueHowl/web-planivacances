@@ -1,5 +1,5 @@
 import axios from "axios";
-import { authenticate } from "./AuthService";
+import { getIdToken } from "./AuthService";
 import { customTokenStore } from "../stores/authToken";
 
 let customToken: string;
@@ -26,7 +26,7 @@ export const setToken = (token: string) => {
 
 const refreshToken = async () => {
     // Logic to fetch a new token
-    const newToken = await authenticate(customToken);
+    const newToken = await getIdToken();
   
     // Update the Axios instance headers with the new token
     instance.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
