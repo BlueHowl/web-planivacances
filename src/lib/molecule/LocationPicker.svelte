@@ -6,6 +6,7 @@
 
   let map: any;
   let marker: any;
+  let searchInput: HTMLInputElement;
 
   export let place: Place|null = {
       street: '',
@@ -42,8 +43,8 @@
   });
 
   function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: { lat: place?.lat, lng: place?.lon },
+    map = new google.maps.Map(document.getElementById('map')!, {
+      center: { lat: place?.lat ?? 0, lng: place?.lon ?? 0 },
       zoom: 5,
     });
 
@@ -83,6 +84,34 @@
 
     });
 
+    // Add a Places Autocomplete search bar
+    const autocomplete = new google.maps.places.Autocomplete(searchInput, { types: ['geocode'] });
+    autocomplete.addListener('place_changed', () => {
+      searchInput.textContent = autocomplete.getPlace.name;
+      const selectedPlace = autocomplete.getPlace();
+
+      if (!selectedPlace.geometry) {
+        console.error("Place details not found for the input: ", searchInput.value);
+        return;
+      }
+
+      // Update map and marker with the selected place
+      map.setCenter(selectedPlace.geometry.location);
+      marker.setPosition(selectedPlace.geometry.location);
+
+      const { lat, lng } = selectedPlace.geometry.location.toJSON();
+      if (place != null) {
+        place.lat = lat;
+        place.lon = lng;
+      }
+
+      getAddress(lat, lng);
+
+      dispatch('place', {
+        selectedPlace: place,
+      });
+    });
+    
   }
 
   function getUserLocation() {
@@ -160,11 +189,15 @@
 
 </script>
   
-  
+<input type="text" bind:this={searchInput} placeholder="Rechercher un lieu">
 <div id="map"></div>
 <p>{place?.street}, {place?.number} {place?.city} {place?.country}</p>
 
 <style>
+    input {
+      width: 100%;
+    }
+
     #map {
       height: 400px;
     }

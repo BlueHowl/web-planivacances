@@ -1,18 +1,23 @@
 <script lang="ts">
   import { EmojiButton } from "@joeattardi/emoji-button";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 
   const dispatch = createEventDispatcher();
 
   const picker = new EmojiButton();
-  let trigger: any;
+  let trigger: HTMLElement | null = null;
+
+  onMount(() => {
+    trigger = document.getElementById("emoji-button");
+  });
 
   picker.on("emoji", (selection) => {
     dispatch("change", selection);
   });
 
   function togglePicker() {
-    picker.togglePicker(trigger);
+    console.log(trigger);
+    picker.togglePicker(trigger!);
   }
 </script>
 
