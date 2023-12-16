@@ -40,11 +40,11 @@
 
           navigate("/");
         } else {
-          errorMessage = "problème lors de la création du compte"
+          errorMessage = "Problème lors de la création du compte"
         }
       });
     } else {
-      errorMessage = "problème de correspondance des mots de passe"
+      errorMessage = "Problème de correspondance des mots de passe"
     }
   }
 </script>
@@ -53,7 +53,11 @@
 <section id="registerForm">
   <Form action="POST" {validated} on:submit={onSubmit}>
     <FormGroup floating label="Nom">
-      <Input name="name" placeholder="Nom" feedback="Nom requis" required />
+      <Input 
+      name="name" 
+      placeholder="Nom" 
+      feedback="Nom requis" 
+      required />
     </FormGroup>
     <FormGroup floating label="Prénom">
       <Input

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Router, Route, navigate } from "svelte-navigator";
+  import { Router, Route } from "svelte-navigator";
   import Footer from "./lib/atom/Footer.svelte";
   import Header from "./lib/organism/Header.svelte";
   import Home from "./lib/page/Home.svelte";

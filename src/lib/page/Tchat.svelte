@@ -10,6 +10,7 @@
   import { groupListStore } from "../../stores/groups";
   import { currentGidStore as currentGidStore } from "../../stores/currentGroup";
   import type { GroupMap } from "../../model/GroupMap";
+    import { instance } from "../../service/ApiClient";
 
   let definedHoliday = false;
   let messages: any = [];
@@ -27,20 +28,13 @@
 
   function sendMessage(event: CustomEvent) {
     if (token && groupId) {
-      fetch("http://localhost:8080/api/chat/message", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+      instance.post<string>("/chat/message", {
           sender: uid,
           displayName: displayName,
           groupId: groupId,
           content: event.detail.message,
           time: Date.now(),
-        }),
-      });
+        });
     }
   }
 
@@ -81,10 +75,10 @@
         channel = tchatWS.subscribe(`private-${groupId}`);
 
         channel.bind("pusher:subscription_succeeded", () => {
-          loadPreviousMessages(token, groupId);
+          loadPreviousMessages(groupId);
         });
 
-        channel.bind("new_messages", (message) => {
+        channel.bind("new_messages", (message: any) => {
           if (previousMessagesLoaded) {
             addMessage(message);
           }
@@ -99,18 +93,17 @@
       tchatWS?.disconnect();
     });
 
-    const loadPreviousMessages = async (authToken: string, gid: string) => {
-      const response = await fetch("http://localhost:8080/api/chat/messages", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          GID: gid,
-        },
-      });
+    const loadPreviousMessages = async (gid: string) => {
+      const response = await instance.post<Array<any>>("/chat/messages", 
+        {}, {
+          headers: {
+            'GID': gid
+          }
+        });
 
-      if (response.ok) {
-        const messages = await response.json();
-        messages.forEach((message) => {
+      if (response.status == 200) {
+        const messages = response.data;
+        messages.forEach((message: any) => {
           addMessage(message);
         });
         previousMessagesLoaded = true;
