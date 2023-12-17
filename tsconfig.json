@@ -5,6 +5,8 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "resolveJsonModule": true,
+    "sourceMap": false,
+    "inlineSourceMap": false,
     "types": ["svelte", "googlemaps"],
     /**
      * Typecheck JS in `.svelte` and `.js` files by default.
