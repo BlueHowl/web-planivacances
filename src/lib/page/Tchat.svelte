@@ -10,7 +10,7 @@
   import { groupListStore } from "../../stores/groups";
   import { currentGidStore as currentGidStore } from "../../stores/currentGroup";
   import type { GroupMap } from "../../model/GroupMap";
-    import { instance } from "../../service/ApiClient";
+  import { instance } from "../../service/ApiClient";
 
   let definedHoliday = false;
   let messages: any = [];

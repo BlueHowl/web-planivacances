@@ -57,7 +57,7 @@
 
 <style>
   #contactForm {
-    margin: 2rem auto;
+    margin: 5rem auto;
     width: 35rem;
   }
 </style>

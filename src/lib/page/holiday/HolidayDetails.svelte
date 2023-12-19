@@ -67,12 +67,13 @@
 
 <section id="holidayDetails">
   {#if group != null}
-    <i
-      id="addMemberIcone"
-      class="fa-solid fa-user-plus fa-2xl"
-      on:click={addMemberToHoliday}
-      on:keypress={addMemberToHoliday}
-    />
+    <div id="addMemberIcone">
+      <i
+        class="fa-solid fa-user-plus fa-2xl"
+        on:click={addMemberToHoliday}
+        on:keypress={addMemberToHoliday}
+      />
+    </div>
     <h1>{group.groupName}</h1>
     <h2>Du {formattedStartDate} au {formattedEndDate}</h2>
     <h3>{address}</h3>
@@ -110,11 +111,13 @@
 
 <style>
   #holidayDetails {
-    width: 60%;
-    margin: auto;
+    /*width: 60%;
+    margin: auto;*/
   }
   #addMemberIcone {
     margin-bottom: 1rem;
+
+    text-align: end;
   }
 
   #moreActionsForHoliday {

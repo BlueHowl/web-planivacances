@@ -3,7 +3,23 @@
   import HolidaysSection from "../../organism/HolidaysSection.svelte";
 </script>
 
+<div id="addHoliday">
+  <Link to="/newHoliday">
+    <i class="fa-solid fa-plus"></i>
+  </Link>
+</div>
+
 <h1>Mes vacances</h1>
-<Link to="/newHoliday">Ajouter une période de vacances</Link>
 
 <HolidaysSection />
+
+<style>
+  #addHoliday {
+    text-align: end;
+  }
+
+  #addHoliday i {
+    font-size: 3.5em;
+    color: black;
+  }
+</style>

@@ -27,7 +27,7 @@
 
   function appendEmoji(event: CustomEvent) {
     const inputMessage = document.getElementById("inputMessage");
-    const cursorPosition = inputMessage.selectionStart;
+    const cursorPosition = inputMessage!.selectionStart;
 
     messageText =
       messageText.substring(0, cursorPosition) +
