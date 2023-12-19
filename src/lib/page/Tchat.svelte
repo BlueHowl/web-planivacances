@@ -23,6 +23,8 @@
   let channel: Channel | null;
   let previousMessagesLoaded: boolean = false;
 
+  let isArrowVisible = true;
+
   let groups: GroupMap = $groupListStore || {};
   let group = groups[$currentGidStore];
 
@@ -38,6 +40,36 @@
     }
   }
 
+  function addMessage(message: any) {
+    if (messages.length == 100) {
+      messages.shift();
+    }
+    messages = [...messages, message];
+
+    scrollDown();
+  }
+
+  function scrollDown() {
+    document.querySelector("footer")?.scrollIntoView();
+  }
+
+  const loadPreviousMessages = async (gid: string) => {
+    const response = await instance.post<Array<any>>("/chat/messages", 
+      {}, {
+        headers: {
+          'GID': gid
+        }
+      });
+
+    if (response.status == 200) {
+      const messages = response.data;
+      messages.forEach((message: any) => {
+        addMessage(message);
+      });
+      previousMessagesLoaded = true;
+    }
+  };
+
   if ($userStore) {
     uid = $userStore.uid;
     displayName = $userStore.displayName;
@@ -48,16 +80,24 @@
       title = group.groupName;
     }
 
-    function addMessage(message: any) {
-      if (messages.length == 100) {
-        messages.shift();
-      }
-      messages = [...messages, message];
-
-      document.querySelector("footer")?.scrollIntoView();
-    }
-
     onMount(async () => {
+
+      const handleScroll = () => {
+        const viewPort = document.getElementById('tchat');
+        const scrollY = window.scrollY || window.pageYOffset;
+
+        // Set the threshold as needed (e.g., 20 pixels from the bottom)
+        const threshold = 350;
+
+        // Calculate the distance from the bottom
+        const distanceFromBottom = viewPort!.offsetHeight - (scrollY + window.innerHeight/2);
+
+        // Update visibility based on the distance from the bottom
+        isArrowVisible = distanceFromBottom >= threshold;
+      };
+
+      window.addEventListener('scroll', handleScroll);
+
       token = await getIdToken();
       if (token != null) {
         tchatWS = new Pusher(PUSHER.key, {
@@ -85,6 +125,7 @@
         });
       }
     });
+
     onDestroy(() => {
       console.log("onDestroy called");
       channel?.unbind("pusher:subscription_succeeded");
@@ -92,23 +133,6 @@
       tchatWS?.unsubscribe(`private-${groupId}`);
       tchatWS?.disconnect();
     });
-
-    const loadPreviousMessages = async (gid: string) => {
-      const response = await instance.post<Array<any>>("/chat/messages", 
-        {}, {
-          headers: {
-            'GID': gid
-          }
-        });
-
-      if (response.status == 200) {
-        const messages = response.data;
-        messages.forEach((message: any) => {
-          addMessage(message);
-        });
-        previousMessagesLoaded = true;
-      }
-    };
   }
 </script>
 
@@ -126,6 +150,25 @@
   </section>
   <InputMessage on:send={sendMessage} />
   <div style="height:2rem" />
+  {#if isArrowVisible}
+    <button id="scroll-btn" class="scroll-button" class:hidden={!isArrowVisible} on:click={scrollDown}>
+      <i class="fa-solid fa-arrow-down"></i>
+    </button>
+  {/if}
 {:else}
   <h1>Impossible de charger le tchat pour ce voyage</h1>
 {/if}
+
+<style>
+  .scroll-button {
+    position: fixed;
+    bottom: 4rem;
+    right: 2rem;
+    transition: opacity 0.5s ease;
+  }
+
+  .hidden {
+    opacity: 0;
+  }
+
+</style>
