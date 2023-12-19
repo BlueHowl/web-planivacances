@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: transparent;/*#242424;*/
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,6 +29,60 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #1a1a1a;
+}
+
+.bg-sea-image {
+  background-image: url(/~d170051/PlaniVacances/src/assets/sea.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  filter: blur(4px);
+
+  position: fixed;
+  bottom: 0;
+
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+}
+
+.bg-sun-image {
+  background-image: url(/~d170051/PlaniVacances/src/assets/sun.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  filter: blur(4px);
+
+  z-index: -1;
+
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  width: 25%;
+  height: -webkit-fill-available;
+}
+
+.bg-palmtree-image {
+  background-image: url(/~d170051/PlaniVacances/src/assets/palmtree.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  transform: rotate(15deg);
+
+  filter: blur(4px);
+
+  z-index: -1;
+
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+  width: 75%;
+  height: 75%;
+  
+  margin-left: -3vw;
 }
 
 h1 {
