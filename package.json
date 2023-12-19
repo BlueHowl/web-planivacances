@@ -1,7 +1,7 @@
 {
   "name": "web-planivacances",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,10 +11,14 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
+    "@testing-library/cypress": "^10.0.1",
     "@tsconfig/svelte": "^5.0.0",
     "@types/firebase": "^3.2.1",
     "@types/googlemaps": "^3.43.3",
+    "@types/jest": "^29.5.11",
     "@types/node": "^20.10.0",
+    "@types/cypress": "^1.1.3",
+    "cypress": "^13.6.1",
     "svelte": "^3.59.2",
     "svelte-check": "^3.4.6",
     "svelte-navigator": "^3.2.2",
@@ -26,17 +30,11 @@
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@joeattardi/emoji-button": "4.6.4",
     "@macfja/svelte-persistent-store": "^2.4.1",
-    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.6.2",
     "date-fns": "^2.30.0",
     "firebase": "^10.4.0",
     "fullcalendar": "^6.1.9",
-<<<<<<< HEAD
     "pusher-js": "^8.4.0-rc1",
-    "redaxios": "^0.5.1",
-=======
->>>>>>> 428c6e28b018b573f1d5f3ca4a4a3dd8090e6510
-    "sveltestrap": "^5.11.2",
-    "websocket-ts": "^2.1.5"
+    "sveltestrap": "^5.11.2"
   }
 }

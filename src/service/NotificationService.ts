@@ -8,11 +8,11 @@ const messaging = getMessaging(app);
 
 export function loadFcmToken() {
 
-    /*if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator) {
         addEventListener('load', function () {
-            navigator.serviceWorker.register('./~q210043/firebase-messaging-sw.js');
+            navigator.serviceWorker.register('./firebase-messaging-sw.js');
         });
-    }*/
+    }
 
     getToken(messaging, { vapidKey: VAPID_MESSAGING_KEY }).then((currentToken) => {
         if (currentToken) {
